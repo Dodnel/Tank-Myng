@@ -22,6 +22,7 @@ class Myng:
 
     def run(self):
         while True:
+            self.clock.tick(60)
             if not self.active:
                 self.kaart.drawMap(self.ekraan)
                 self.tank1.drawTank(self.ekraan)
@@ -29,4 +30,3 @@ class Myng:
                 for kuul in self.kuulid:
                     kuul.drawKuul(self.ekraan)
                 self.collisionCheck()
-            self.clock.tick(60)
