@@ -10,8 +10,8 @@ class Myng:
         self.tank1 = Tank()
         self.tank2 = Tank()
         self.kuulid = []
+
         self.active = False
-        pass
 
     def events(self):
         for event in pygame.event.get():
