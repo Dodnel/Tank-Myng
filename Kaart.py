@@ -1,13 +1,19 @@
 import numpy, pygame
 
 class Kaart:
-    def __init__(self, resolutsioon="900x900",customMap=""):
+    def __init__(self, resolutsioon="900x900",customMap="",tileSuurus=50):
         self.resolutsioon = resolutsioon
+        self.tileSuurus = tileSuurus
+        self.kaardiLaius, self.kaardiKyrgus = self.teiseldaKaardiResolutsioon()
         if customMap == "":
             self.kaart = self.genereeriMap()
         else:
             self.kaart = customMap
 
+    def teiseldaKaardiResolutsioon(self):
+        ekraaniX,ekraaniY = map(int,self.resolutsioon.split("x"))
+
+        return ekraaniX // self.tileSuurus, ekraaniY // self.tileSuurus
 
     def drawMap(self,ekraan):
         """
@@ -28,37 +34,58 @@ class Kaart:
         :return:
         Lõpuks tagastab jada rectidega mis tuleb joonistada, (nüüd kui mõtlen oleks loogilisem drawSeinad)
         """
-        tileSuurus = 50
         seinaPaksus = 3
         tagastavadRectid = []
         for reaArv,rida in enumerate(self.kaart):
             for reaIndex,tile in rida:
-                seinaKoordinaadid = ()
                 if "N" in tile:
                     tagastavadRectid.append(pygame.Rect(
-                        reaIndex * tileSuurus,reaArv * tileSuurus,tileSuurus,seinaPaksus))
+                        reaIndex * self.tileSuurus, reaArv * self.tileSuurus, self.tileSuurus,seinaPaksus))
                 if "W" in tile:
                     tagastavadRectid.append(pygame.Rect(
-                        reaIndex * tileSuurus,reaArv * tileSuurus,seinaPaksus,tileSuurus))
+                        reaIndex * self.tileSuurus, reaArv * self.tileSuurus,seinaPaksus, self.tileSuurus))
                 if "E" in tile:
                     tagastavadRectid.append(pygame.Rect(
-                        (reaIndex + 1) * tileSuurus, reaArv * tileSuurus, seinaPaksus,tileSuurus))
+                        (reaIndex + 1) * self.tileSuurus, reaArv * self.tileSuurus, seinaPaksus, self.tileSuurus))
                 if "S" in tile:
                     tagastavadRectid.append(pygame.Rect(
-                        reaIndex * tileSuurus, (reaArv + 1) * tileSuurus,tileSuurus,seinaPaksus
+                        reaIndex * self.tileSuurus, (reaArv + 1) * self.tileSuurus, self.tileSuurus,seinaPaksus
                     ))
         return tagastavadRectid
 
 
-
-
-
-        return []
         pass
 
     def genereeriMap(self):
-        #idee
-        kaart = numpy.array([1, 2, 3, 4, 5])
+        kaart = []
+        for i in range(self.kaardiLaius):
+            rida = []
+            for j in range(self.kaardiKyrgus):
+                rida.append("")
+            kaart.append(rida)
+
 
         return kaart
-        pass
+
+
+    def lisaSeinad(self):
+        for i in range(len(self.kaart[0])):
+            self.kaart[0][i] = "N"
+            self.kaart[-1][i] = "S"
+
+        for i in range(len(self.kaart)):
+            for j in [0, -1]:
+                if j == 0:
+                    self.kaart[i][j] = "W"
+                else:
+                    self.kaart[i][j] = "E"
+        self.kaart[0][0] = "NW"
+        self.kaart[0][len(self.kaart[0]) - 1] = "NE"
+        self.kaart[len(self.kaart) - 1][0] = "SW"
+        self.kaart[len(self.kaart) - 1][len(self.kaart[0]) - 1] = "SE"
+
+if __name__ == "__main__":
+    kaart = Kaart()
+    kaart.lisaSeinad()
+    for rida in kaart.kaart:
+        print(rida)
