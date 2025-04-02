@@ -1,4 +1,4 @@
-import numpy
+import numpy, pygame
 
 class Kaart:
     def __init__(self, resolutsioon="900x900",customMap=""):
@@ -26,9 +26,34 @@ class Kaart:
 
         :param ekraan:
         :return:
+        Lõpuks tagastab jada rectidega mis tuleb joonistada, (nüüd kui mõtlen oleks loogilisem drawSeinad)
         """
+        tileSuurus = 50
+        seinaPaksus = 3
+        tagastavadRectid = []
+        for reaArv,rida in enumerate(self.kaart):
+            for reaIndex,tile in rida:
+                seinaKoordinaadid = ()
+                if "N" in tile:
+                    tagastavadRectid.append(pygame.Rect(
+                        reaIndex * tileSuurus,reaArv * tileSuurus,tileSuurus,seinaPaksus))
+                if "W" in tile:
+                    tagastavadRectid.append(pygame.Rect(
+                        reaIndex * tileSuurus,reaArv * tileSuurus,seinaPaksus,tileSuurus))
+                if "E" in tile:
+                    tagastavadRectid.append(pygame.Rect(
+                        (reaIndex + 1) * tileSuurus, reaArv * tileSuurus, seinaPaksus,tileSuurus))
+                if "S" in tile:
+                    tagastavadRectid.append(pygame.Rect(
+                        reaIndex * tileSuurus, (reaArv + 1) * tileSuurus,tileSuurus,seinaPaksus
+                    ))
+        return tagastavadRectid
 
 
+
+
+
+        return []
         pass
 
     def genereeriMap(self):
