@@ -34,7 +34,7 @@ class Kaart:
         :return:
         Lõpuks tagastab jada rectidega mis tuleb joonistada, (nüüd kui mõtlen oleks loogilisem drawSeinad)
         """
-        seinaPaksus = 3
+        seinaPaksus = 2
         tagastavadRectid = []
         for reaArv,rida in enumerate(self.kaart):
             for reaIndex,tile in enumerate(rida):
@@ -46,10 +46,10 @@ class Kaart:
                         reaIndex * self.tileSuurus, reaArv * self.tileSuurus,seinaPaksus, self.tileSuurus))
                 if "E" in tile:
                     tagastavadRectid.append(pygame.Rect(
-                        (reaIndex + 1) * self.tileSuurus, reaArv * self.tileSuurus, seinaPaksus, self.tileSuurus))
+                        (reaIndex + 1) * self.tileSuurus - seinaPaksus, reaArv * self.tileSuurus, seinaPaksus, self.tileSuurus))
                 if "S" in tile:
                     tagastavadRectid.append(pygame.Rect(
-                        reaIndex * self.tileSuurus, (reaArv + 1) * self.tileSuurus, self.tileSuurus,seinaPaksus
+                        reaIndex * self.tileSuurus, (reaArv + 1) * self.tileSuurus - seinaPaksus, self.tileSuurus,seinaPaksus
                     ))
         return tagastavadRectid
 
