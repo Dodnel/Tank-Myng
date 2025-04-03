@@ -15,7 +15,7 @@ class Kaart:
 
         return ekraaniX // self.tileSuurus, ekraaniY // self.tileSuurus
 
-    def drawMap(self,ekraan):
+    def drawMap(self):
         """
         Tuleb otsustada kui suur üks tile on
         idee,
@@ -37,7 +37,7 @@ class Kaart:
         seinaPaksus = 3
         tagastavadRectid = []
         for reaArv,rida in enumerate(self.kaart):
-            for reaIndex,tile in rida:
+            for reaIndex,tile in enumerate(rida):
                 if "N" in tile:
                     tagastavadRectid.append(pygame.Rect(
                         reaIndex * self.tileSuurus, reaArv * self.tileSuurus, self.tileSuurus,seinaPaksus))
@@ -53,9 +53,6 @@ class Kaart:
                     ))
         return tagastavadRectid
 
-
-        pass
-
     def genereeriMap(self):
         kaart = []
         for i in range(self.kaardiLaius):
@@ -63,7 +60,6 @@ class Kaart:
             for j in range(self.kaardiKyrgus):
                 rida.append("")
             kaart.append(rida)
-
 
         return kaart
 
@@ -79,6 +75,8 @@ class Kaart:
                     self.kaart[i][j] = "W"
                 else:
                     self.kaart[i][j] = "E"
+
+        #nurgad
         self.kaart[0][0] = "NW"
         self.kaart[0][len(self.kaart[0]) - 1] = "NE"
         self.kaart[len(self.kaart) - 1][0] = "SW"
