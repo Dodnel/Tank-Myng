@@ -2,8 +2,10 @@ import pygame, sys
 from Kaart import Kaart
 
 pygame.init()
-screen = pygame.display.set_mode((900, 900))
-kaart = Kaart()
+screen = pygame.display.set_mode((500, 500))
+kaart = Kaart(resolutsioon="500x500")
+kaart.lisaSeinad()
+kaart.kaart[3][3] = ""
 
 seinad = kaart.drawMap()
 

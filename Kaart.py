@@ -83,7 +83,7 @@ class Kaart:
         self.kaart[len(self.kaart) - 1][len(self.kaart[0]) - 1] = "SE"
 
 if __name__ == "__main__":
-    kaart = Kaart()
+    kaart = Kaart(resolutsioon="500x500")
     kaart.lisaSeinad()
     for rida in kaart.kaart:
         print(rida)
