@@ -3,8 +3,8 @@ from Kaart import Kaart
 from Kuul import Kuul
 
 pygame.init()
-screen = pygame.display.set_mode((1000, 1000))
-kaart = Kaart(resolutsioon="800x300")
+screen = pygame.display.set_mode((500, 500))
+kaart = Kaart(resolutsioon="500x500")
 #kuul = Kuul()
 
 
