@@ -2,7 +2,7 @@ import pygame, sys
 from Kaart import Kaart
 from Kuul import Kuul
 
-resolutsioon = "1900x1200"
+resolutsioon = "900x500"
 
 laius, kyrgus = map(int,resolutsioon.split("x"))
 
@@ -10,7 +10,7 @@ pygame.init()
 
 screen = pygame.display.set_mode((laius,kyrgus))
 
-kaart = Kaart(resolutsioon=resolutsioon)
+kaart = Kaart(resolutsioon=resolutsioon,tileSuurus=50)
 #kuul = Kuul()
 
 
