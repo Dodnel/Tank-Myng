@@ -2,15 +2,19 @@ import pygame, sys
 from Kaart import Kaart
 from Kuul import Kuul
 
+resolutsioon = "1900x1200"
+
+laius, kyrgus = map(int,resolutsioon.split("x"))
+
 pygame.init()
-screen = pygame.display.set_mode((500, 500))
-kaart = Kaart(resolutsioon="500x500")
+
+screen = pygame.display.set_mode((laius,kyrgus))
+
+kaart = Kaart(resolutsioon=resolutsioon)
 #kuul = Kuul()
 
 
-kaart.lisaSeinad()
-kaart.kaart[3][3] = "NSWE"
-kaart.kaart[3][4] = "N"
+kaart.randomizedKruskalAlgoritm()
 
 seinad = kaart.drawMap()
 print(seinad)

@@ -1,4 +1,4 @@
-import numpy, pygame
+import pygame, random
 
 class Kaart:
     def __init__(self, resolutsioon="900x900",customMap="",tileSuurus=50):
@@ -13,7 +13,10 @@ class Kaart:
     def teiseldaKaardiResolutsioon(self):
         ekraaniX,ekraaniY = map(int,self.resolutsioon.split("x"))
 
-        return ekraaniX // self.tileSuurus, ekraaniY // self.tileSuurus
+        kaardiLaius = ekraaniX // self.tileSuurus
+        kaardiKyrgus = ekraaniY // self.tileSuurus
+
+        return kaardiLaius, kaardiKyrgus
 
     def drawMap(self):
         """
@@ -55,14 +58,62 @@ class Kaart:
 
     def genereeriMap(self):
         kaart = []
-        for i in range(self.kaardiLaius):
+        for i in range(self.kaardiKyrgus):
             rida = []
-            for j in range(self.kaardiKyrgus):
+            for j in range(self.kaardiLaius):
                 rida.append("")
             kaart.append(rida)
 
         return kaart
 
+    def randomizedKruskalAlgoritm(self):
+        setid = {}
+        kylastamataSeinad = []
+
+        for i in range(self.kaardiKyrgus):
+            for j in range(self.kaardiLaius):
+                self.kaart[i][j] = "NSEW"
+                setid[(i, j)] = {(i, j)}
+
+                for orientatsioon in "NSEW":
+                    if orientatsioon == "N" and i == 0:
+                        pass
+                    elif orientatsioon == "S" and i == self.kaardiKyrgus - 1:
+                        pass
+                    elif orientatsioon == "W" and j == 0:
+                        pass
+                    elif orientatsioon == "E" and j == self.kaardiLaius - 1:
+                        pass
+                    else:
+                        kylastamataSeinad.append((i, j, orientatsioon))
+
+        random.shuffle(kylastamataSeinad)
+
+        for rida, veerg, orientatsioon  in kylastamataSeinad:
+            if len(setid[(0, 0)]) == self.kaardiKyrgus * self.kaardiLaius:
+                break
+
+            match orientatsioon:
+                case "N":
+                    naaber = (rida - 1, veerg)
+                    vastas = "S"
+                case "S":
+                    naaber = (rida + 1, veerg)
+                    vastas = "N"
+                case "E":
+                    naaber = (rida, veerg + 1)
+                    vastas = "W"
+                case "W":
+                    naaber = (rida, veerg - 1)
+                    vastas = "E"
+
+            if setid[(rida,veerg)] is not setid[naaber]:
+                self.kaart[rida][veerg] = self.kaart[rida][veerg].replace(orientatsioon, "")
+                self.kaart[naaber[0]][naaber[1]] = self.kaart[naaber[0]][naaber[1]].replace(vastas, "")
+
+                uusSet = setid[(rida,veerg)].union(setid[naaber])
+                for cell in uusSet:
+                    setid[cell] = uusSet
 
     def lisaSeinad(self):
         for i in range(len(self.kaart[0])):
@@ -83,7 +134,7 @@ class Kaart:
         self.kaart[len(self.kaart) - 1][len(self.kaart[0]) - 1] = "SE"
 
 if __name__ == "__main__":
-    kaart = Kaart(resolutsioon="500x500")
-    kaart.lisaSeinad()
+    kaart = Kaart(resolutsioon="1900x500")
+    kaart.randomizedKruskalAlgoritm()
     for rida in kaart.kaart:
         print(rida)
