@@ -15,15 +15,18 @@ screen = pygame.display.set_mode((laius,kyrgus))
 
 kaart = Kaart(resolutsioon=resolutsioon,tileSuurus=50)
 #kuul = Kuul()
-tank = Tank(50, 50, 20, 20, (128, 0, 255))
+tank = Tank(100, 50, 20, 30, (128, 0, 255))
 
-liikuvadAsjad = pygame.sprite.Group(tank)
+kuul = Kuul(1,-2,300,300, (10,20))
+
+liikuvadAsjad = pygame.sprite.Group(tank, kuul)
 
 kaart.randomizedKruskalAlgoritm()
 
 seinad = kaart.drawMap()
 print(seinad)
 vajutus = 0
+vajutus2 = 0
 nuppAll = False
 while True:
     clock.tick(60)
@@ -33,33 +36,50 @@ while True:
         if event.type == pygame.KEYDOWN:
             keys = pygame.key.get_pressed()
 
-            if keys[pygame.K_d]:
+            if keys[pygame.K_a]:
                 vajutus = 1
-            elif keys[pygame.K_a]:
+            elif keys[pygame.K_d]:
                 vajutus = -1
+
+            if keys[pygame.K_w]:
+                vajutus2 = 1
+            elif keys[pygame.K_s]:
+                vajutus2 = -1
             else:
                 pass
             nuppAll = True
 
         if event.type == pygame.KEYUP:
             keys = pygame.key.get_pressed()
-            if not keys[pygame.K_d]:
+            if not keys[pygame.K_a]:
                 vajutus = 0
                 nuppAll = False
-            elif not keys[pygame.K_a]:
+            elif not keys[pygame.K_d]:
                 vajutus = 0
                 nuppAll = False
             else:
                 pass
 
+            if not keys[pygame.K_w]:
+                vajutus2 = 0
+                nuppAll = False
+            elif not keys[pygame.K_s]:
+                vajutus2 = 0
+                nuppAll = False
+
+
 
     if nuppAll:
         tank.keera(vajutus)
-
+    tank.liigu(vajutus2)
     screen.fill("white")
+
     for sein in seinad:
         pygame.draw.rect(screen,"black", sein)
+
+    kuul.kalkuleeriLiikumine()
     liikuvadAsjad.update()
     liikuvadAsjad.draw(screen)
+    print(liikuvadAsjad)
 
     pygame.display.flip()
