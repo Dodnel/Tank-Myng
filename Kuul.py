@@ -5,6 +5,7 @@ class Kuul:
         self.koordinaadid = koordinaadid
         self.vektor = vektor
         self.eluaeg = eluaeg
+        pass
 
     def tagastaAsukoht(self) -> list:
         return self.koordinaadid
