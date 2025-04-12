@@ -17,7 +17,11 @@ kaart = Kaart(resolutsioon=resolutsioon,tileSuurus=50)
 #kuul = Kuul()
 tank = Tank(100, 50, 20, 30, (128, 0, 255))
 
+
 kuul = Kuul(1,-2,300,300, (10,20))
+
+kuulid = [kuul]
+
 
 liikuvadAsjad = pygame.sprite.Group(tank, kuul)
 
@@ -49,6 +53,11 @@ while True:
                 pass
             nuppAll = True
 
+            if keys[pygame.K_f]:
+                uusKuul = tank.tulista()
+                kuulid.append(uusKuul)
+                liikuvadAsjad.add(uusKuul)
+
         if event.type == pygame.KEYUP:
             keys = pygame.key.get_pressed()
             if not keys[pygame.K_a]:
@@ -77,8 +86,9 @@ while True:
     for sein in seinad:
         pygame.draw.rect(screen,"black", sein)
 
-    kuul.kalkuleeriLiikumine()
-    liikuvadAsjad.update()
+    for kuul in kuulid:
+        kuul.kalkuleeriLiikumine()
+
     liikuvadAsjad.draw(screen)
     print(liikuvadAsjad)
 

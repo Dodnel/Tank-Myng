@@ -6,6 +6,7 @@ Kui ei pane seda recti peame kontrollima kas ta kontrollib kõik seintega mapi p
 """
 import pygame
 from math import sin, cos,sqrt, radians
+from Kuul import Kuul
 
 #see on varastatud, ma vist teen yppimise pyhimyttel ise mingi hetk
 class Tank(pygame.sprite.Sprite):
@@ -14,7 +15,11 @@ class Tank(pygame.sprite.Sprite):
         self.angle = 0
         self.original_image = pygame.Surface([w, h], pygame.SRCALPHA)
         self.original_image.fill(vyrv)
+
+        #self.original_image = pygame.image.load("sprite/pixil-frame-0.png")
+
         self.image = self.original_image
+
         self.rectKeskpunkt = (x,y)
         self.rect = self.image.get_rect(center=self.rectKeskpunkt)
         self.mask = pygame.mask.from_surface(self.image)
@@ -39,10 +44,11 @@ class Tank(pygame.sprite.Sprite):
         elif 90 < kraadid < 180:
             pass
 
-
-        print(self.angle,kraadid, xMuutja, yMuutja)
         self.rectKeskpunkt = (self.rectKeskpunkt[0] + xMuutja * suund, self.rectKeskpunkt[1] + yMuutja * suund)
         self.rect = self.image.get_rect(center=self.rectKeskpunkt)
+
+    def tulista(self):
+        return Kuul(10, -20, self.rectKeskpunkt[0], self.rectKeskpunkt[1])
 
     def joonistaTank(self):
         return ""
