@@ -1,7 +1,7 @@
 import pygame
 
 class Kuul(pygame.sprite.Sprite):
-    def __init__(self, vektorX, vektorY, x, y, kuulSuurus=(10,20), varv=(125,125,125), eluaeg=59):
+    def __init__(self, vektorX, vektorY, x, y, kuulSuurus=(10,20), varv=(125,125,125), eluaeg=1000):
         pygame.sprite.Sprite.__init__(self)
         self.x = x
         self.y = y
@@ -18,14 +18,25 @@ class Kuul(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
 
     def tagastaAsukoht(self) -> list:
-        return (self.x, self.y)
+        pass
 
     def drawKuul(self,ekraan):
         pass
 
 
 
-    def kalkuleeriLiikumine(self) -> None:
+    def kalkuleeriLiikumine(self, seinad) -> None:
+
+        """if self.rect.collidelist(seinad):
+            sein = self.rect.collidelist(seinad)
+            print(sein)
+            sein = seinad[sein]
+            if sein.width > sein.height:
+                self.vektorY = -self.vektorY
+            if sein.width < sein.height:
+                self.vektorX = -self.vektorX"""
+
+
         if self.eluaeg:
             print(self.eluaeg)
             self.x += self.vektorX
