@@ -1,23 +1,36 @@
 import tkinter as tk
 
-class Menu:
+class Menyy:
     def __init__(self):
         self.aken = tk.Tk()
         self.aken.title("Tank myng")
         self.aken.geometry("500x500")
+        self.loo_vidinad()
 
-    def looVidinad(self):
-        menyy_silt = tk.Label(self.aken, text="Faking tanki mäng mida??", font=100)
-        menyy_silt.pack(pady=80)
-        start_nupp = tk.Button(self.aken, text="START", font=80, command="", pady=20, padx=20)
-        start_nupp.pack(pady=20)
-        setted_nupp = tk.Button(self.aken, text="SÄTTED", font=80, command="", pady=20, padx=20)
-        setted_nupp.pack(pady=20)
+    def stardi_myng(self):
+        # Mäng käivitatakse pygame-iga
+        self.aken.destroy()
+
+    def ava_satted(self):
+        self.satete_aken = tk.Toplevel(self.aken)
+        self.satete_aken.title("Sätted")
+        self.satete_aken.geometry("400x300")
+
+        tk.Label(self.satete_aken, text="Sätted", font=("Arial", 24)).pack(pady=80)
+
+
+        tk.Button(self.satete_aken, text="Sulge", command=self.satete_aken.destroy, font=("Arial", 16)).pack(pady=20)
+
+
+    def loo_vidinad(self):
+        tk.Label(self.aken, text="Faking tanki mäng mida??", font=("Arial", 24)).pack(pady=80)
+        tk.Button(self.aken, text="START", font=("Arial", 16), command=self.stardi_myng, pady=10, padx=20).pack(pady=10)
+        tk.Button(self.aken, text="SÄTTED", font=("Arial", 16), command=self.ava_satted, pady=10, padx=20).pack(pady=10)
 
     def main(self):
-        menu.looVidinad()
         self.aken.mainloop()
 
+
 if __name__ == "__main__":
-    menu = Menu()
-    menu.main()
+    menyy = Menyy()
+    menyy.main()
