@@ -1,5 +1,5 @@
 import pygame, random
-
+#s
 class Kaart:
     def __init__(self, resolutsioon="900x900",customMap="",tileSuurus=50):
         self.resolutsioon = resolutsioon

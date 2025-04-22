@@ -18,17 +18,19 @@ kaart = Kaart(resolutsioon=resolutsioon,tileSuurus=50)
 tank = Tank(100, 50, 20, 30, (128, 0, 255))
 
 
-kuul = Kuul(1,-2,300,300, (10,20))
+kuul = Kuul(40,10,315,317, (5,10))
 
 kuulid = [kuul]
 
 
-liikuvadAsjad = pygame.sprite.Group(tank, kuul)
+tankidGrupp = pygame.sprite.Group(tank)
+
+kuulidGrupp = pygame.sprite.Group(kuul)
 
 kaart.randomizedKruskalAlgoritm()
 
 seinad = kaart.drawMap()
-print(seinad)
+
 vajutus = 0
 vajutus2 = 0
 nuppAll = False
@@ -56,7 +58,7 @@ while True:
             if keys[pygame.K_f]:
                 uusKuul = tank.tulista()
                 kuulid.append(uusKuul)
-                liikuvadAsjad.add(uusKuul)
+                kuulidGrupp.add(uusKuul)
 
         if event.type == pygame.KEYUP:
             keys = pygame.key.get_pressed()
@@ -87,9 +89,12 @@ while True:
         pygame.draw.rect(screen,"black", sein)
 
     for kuul in kuulid:
-        kuul.kalkuleeriLiikumine()
+        kuul.kalkuleeriLiikumine(seinad)
 
-    liikuvadAsjad.draw(screen)
-    print(liikuvadAsjad)
+    tank.tankiKuuliCollision(kuulidGrupp)
+
+    tankidGrupp.draw(screen)
+    kuulidGrupp.draw(screen)
+
 
     pygame.display.flip()

@@ -1,17 +1,36 @@
 import tkinter as tk
 import pygame
+from PIL import Image, ImageTk
 
-
+#s
 class Menyy:
     def __init__(self):
+        pygame.init()
+        pygame.mixer.init()
+
         self.aken = tk.Tk()
-        self.aken.title("Tanki mäng - Tony Tuisk, Karl Priido Hoogand, Ander Konsap")
-        self.aken.geometry("500x500")
-        self.loo_vidinad()
+        self.aken.title("HÜPERTANKISÕDA - Tony Tuisk, Karl Priido Hoogand, Ander Konsap")
+        self.akna_suurus_x, self.akna_suurus_y = 640, 360
+        self.aken.geometry(f"{self.akna_suurus_x}x{self.akna_suurus_y}")
+        self.aken.resizable(False, False)
+        self.taustavarv = "#aa6c24"
+        self.nupuvarv = "#d18d3e"
+        self.aken.configure(background=self.taustavarv)
+
+        self.taustapilt = Image.open(r"sprite\taustapilt.png")
+        self.taustapilt = self.taustapilt.resize((self.akna_suurus_x, self.akna_suurus_y), Image.Resampling.LANCZOS)
+        self.taustapilt_pilt = ImageTk.PhotoImage(self.taustapilt)
+        self.tausta_silt = tk.Label(self.aken, image=self.taustapilt_pilt)
+        self.tausta_silt.place(x=0, y=0, relwidth=1, relheight=1)
 
         self.heli_mangib = True
-        self.helipilt_on = "heli_on.png"
-        self.helipilt_off = "heli_off.png"
+        self.helipilt_on = Image.open(r"sprite\heli_on.png").resize((50, 50))
+        self.helipilt_off = Image.open(r"sprite\heli_off.png").resize((50, 50))
+        self.helipilt = ImageTk.PhotoImage(self.helipilt_on)
+        self.helipilt_silt = tk.Label(self.aken, image=self.helipilt, bg=self.taustavarv, bd=0, cursor="hand2")
+
+        self.stardi_heli()
+        self.loo_vidinad()
 
     def stardi_myng(self):
         # Mäng käivitatakse pygame-iga
@@ -25,30 +44,29 @@ class Menyy:
         tk.Label(self.satete_aken, text="Sätted", font=("Arial", 24)).pack(pady=80)
 
 
-        tk.Button(self.satete_aken, text="Sulge", command=self.satete_aken.destroy, font=("Arial", 16)).pack(pady=20)
+        tk.Button(self.satete_aken, text="Sulge", bg=self.nupuvarv, command=self.satete_aken.destroy, font=("Arial", 16)).pack(pady=20)
 
+    def stardi_heli(self):
+        pygame.mixer.music.load(r"audio\Tanki_mangu_peamenyy_laul_copyrighted_trust.mp3")
+        pygame.mixer.music.play(-1)
 
-    def lylita_heli(self):
-        if self.heli:
-            pygame.mixer_music.stop()
-            self.helipilt = tk.PhotoImage(file=self.helipilt_off)
-            self.heli = False
+    def lylita_heli(self, syndmus):
+        if self.heli_mangib:
+            pygame.mixer.music.set_volume(0)
+            self.helipilt = ImageTk.PhotoImage(self.helipilt_off)
+            self.heli_mangib = False
         else:
-            pygame.mixer_music.play(-1)
-            self.helipilt = tk.PhotoImage(file=self.helipilt_on)
-            self.heli_on = True
+            pygame.mixer.music.set_volume(1.0)
+            self.helipilt = ImageTk.PhotoImage(self.helipilt_on)
+            self.heli_mangib = True
 
         self.helipilt_silt.config(image=self.helipilt)
-        pass
-
 
     def loo_vidinad(self):
-        tk.Label(self.aken, text="Faking tanki mäng mida??", font=("Arial", 24)).pack(pady=80)
-        tk.Button(self.aken, text="START", font=("Arial", 16), command=self.stardi_myng, pady=10, padx=20).pack(pady=10)
-        tk.Button(self.aken, text="SÄTTED", font=("Arial", 16), command=self.ava_satted, pady=10, padx=20).pack(pady=10)
+        tk.Label(self.aken, text="HÜPERTANKISÕDA", font=("Arial", 24)).pack(pady=80)
+        tk.Button(self.aken, text="START", font=("Arial", 16), bg=self.nupuvarv, command=self.stardi_myng, pady=10, padx=20).pack(pady=10)
+        tk.Button(self.aken, text="SÄTTED", font=("Arial", 16), bg=self.nupuvarv, command=self.ava_satted, pady=10, padx=20).pack(pady=10)
 
-        self.helipilt = tk.PhotoImage(file=self.helipilt_on)
-        self.helipilt_silt = tk.Label(self.aken, image=self.helipilt, bg="white", bd=0, cursor="hand2")
         self.helipilt_silt.place(relx=0.95, rely=0.95, anchor="se")
 
         self.helipilt_silt.bind("<Button-1>", self.lylita_heli)

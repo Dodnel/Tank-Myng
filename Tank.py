@@ -48,7 +48,21 @@ class Tank(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=self.rectKeskpunkt)
 
     def tulista(self):
-        return Kuul(10, -20, self.rectKeskpunkt[0], self.rectKeskpunkt[1])
+        return Kuul(50, 5, self.rectKeskpunkt[0], self.rectKeskpunkt[1], kuulSuurus=(5,10))
+
+    def getRect(self):
+        return self.rect
 
     def joonistaTank(self):
         return ""
+
+    def tangiCollisionSeinadCheck(self,seinad):
+        if self.rect.collidelist(seinad):
+            pass
+
+    def tankiKuuliCollision(self, kuuliGrupp, ):
+        kuulideList = pygame.sprite.spritecollide(self, kuuliGrupp, True)
+
+        if kuulideList:
+            print("Pahhh")
+            kuulideList.clear()
