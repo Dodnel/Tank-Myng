@@ -3,7 +3,6 @@ from winreg import KEY_WRITE
 import pygame, sys
 from Kaart import Kaart
 from Kuul import Kuul
-from pygame.locals import *
 from Tank import Tank
 resolutsioon = "900x500"
 
@@ -18,7 +17,7 @@ kaart = Kaart(resolutsioon=resolutsioon,tileSuurus=50)
 tank = Tank(100, 50, 20, 30, (128, 0, 255))
 
 
-kuul = Kuul(1,-2,300,300, (10,20))
+kuul = Kuul(1,1,300,300, (10,20))
 
 kuulid = [kuul]
 
@@ -28,7 +27,6 @@ liikuvadAsjad = pygame.sprite.Group(tank, kuul)
 kaart.randomizedKruskalAlgoritm()
 
 seinad = kaart.drawMap()
-print(seinad)
 vajutus = 0
 vajutus2 = 0
 nuppAll = False
@@ -81,13 +79,16 @@ while True:
     if nuppAll:
         tank.keera(vajutus)
     tank.liigu(vajutus2)
+
     screen.fill("white")
 
+    pygame.draw.rect(screen, rect=tank.getRect(), color="red")
     for sein in seinad:
         pygame.draw.rect(screen,"black", sein)
 
     for kuul in kuulid:
         kuul.kalkuleeriLiikumine()
+        pygame.draw.rect(screen,rect=kuul.rect,color="red")
 
     liikuvadAsjad.draw(screen)
     print(liikuvadAsjad)
