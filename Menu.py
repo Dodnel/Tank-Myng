@@ -39,6 +39,7 @@ class Menyy:
             self.heli_on = True
 
         self.helipilt_silt.config(image=self.helipilt)
+        pass
 
 
     def loo_vidinad(self):
