@@ -6,12 +6,12 @@ class Myng:
         pygame.init()
         self.ekraan = pygame.display.set_mode((800, 600))
         self.clock = pygame.time.Clock()
-        self.kaart = Kaart()
+        self.kaart = Kaart
         self.tank1 = Tank()
         self.tank2 = Tank()
         self.kuulid = []
+
         self.active = False
-        pass
 
     def events(self):
         for event in pygame.event.get():
