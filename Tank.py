@@ -57,10 +57,29 @@ class Tank(pygame.sprite.Sprite):
         return ""
 
     def tangiCollisionSeinadCheck(self,seinad):
-        if self.rect.collidelist(seinad):
-            pass
+        maskitavadSeinad = self.rect.collidelistall(seinad)
+        print(maskitavadSeinad)
+        overlapped = False
+        if maskitavadSeinad:
+            for sein in maskitavadSeinad:
+                sein = seinad[sein]
+                rect_mask = pygame.mask.Mask((sein.width, sein.height))
+                rect_mask.fill()
+                offset_x = sein.left - self.rect.left
+                offset_y = sein.top - self.rect.top
 
-    def tankiKuuliCollision(self, kuuliGrupp, ):
+                if self.mask.overlap(rect_mask, (offset_x, offset_y)):
+                    self.original_image.fill("red")
+
+        else:
+            self.original_image.fill("green")
+
+        # vyiks tagastada booleani
+        # teeks liikumist nii et simuleerib tangi liikumist yhe frami vyrra eespool ja siis kui
+        # peaks collidima siis mitte lubada.
+
+
+def tankiKuuliCollision(self, kuuliGrupp, ):
         kuulideList = pygame.sprite.spritecollide(self, kuuliGrupp, True)
 
         if kuulideList:
