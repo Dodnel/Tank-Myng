@@ -23,6 +23,7 @@ class Tank(pygame.sprite.Sprite):
         self.rectKeskpunkt = (x,y)
         self.rect = self.image.get_rect(center=self.rectKeskpunkt)
         self.mask = pygame.mask.from_surface(self.image)
+        self.h = h
 
     def keera(self, suund):
         if suund == 1:
@@ -48,7 +49,11 @@ class Tank(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=self.rectKeskpunkt)
 
     def tulista(self):
-        return Kuul(50, 5, self.rectKeskpunkt[0], self.rectKeskpunkt[1], kuulSuurus=(5,10))
+        toruVektor = pygame.Vector2.from_polar((self.h/2 + 10, self.angle))
+        kuuliPunkt = self.rectKeskpunkt + toruVektor
+        print(self.angle)
+
+        return Kuul(self.angle, 5, kuuliPunkt[0], kuuliPunkt[1], kuulSuurus=(5,10))
 
     def getRect(self):
         return self.rect
@@ -57,12 +62,32 @@ class Tank(pygame.sprite.Sprite):
         return ""
 
     def tangiCollisionSeinadCheck(self,seinad):
-        if self.rect.collidelist(seinad):
-            pass
+        maskitavadSeinad = self.rect.collidelistall(seinad)
+        print(maskitavadSeinad)
+        overlapped = False
+        if maskitavadSeinad:
+            for sein in maskitavadSeinad:
+                sein = seinad[sein]
+                rect_mask = pygame.mask.Mask((sein.width, sein.height))
+                rect_mask.fill()
+                offset_x = sein.left - self.rect.left
+                offset_y = sein.top - self.rect.top
+
+                if self.mask.overlap(rect_mask, (offset_x, offset_y)):
+                    self.original_image.fill("red")
+
+        else:
+            self.original_image.fill("green")
+
+        # vyiks tagastada booleani
+        # teeks liikumist nii et simuleerib tangi liikumist yhe frami vyrra eespool ja siis kui
+        # peaks collidima siis mitte lubada.
+
 
     def tankiKuuliCollision(self, kuuliGrupp, ):
-        kuulideList = pygame.sprite.spritecollide(self, kuuliGrupp, True)
+        kuulidHit = pygame.sprite.spritecollide(self, kuuliGrupp, True)
 
-        if kuulideList:
+        if kuulidHit:
             print("Pahhh")
-            kuulideList.clear()
+
+            kuulidHit.clear()

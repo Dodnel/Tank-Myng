@@ -92,6 +92,7 @@ while True:
         kuul.kalkuleeriLiikumine(seinad)
 
     tank.tankiKuuliCollision(kuulidGrupp)
+    tank.tangiCollisionSeinadCheck(seinad)
 
     tankidGrupp.draw(screen)
     kuulidGrupp.draw(screen)
