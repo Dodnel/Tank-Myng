@@ -20,9 +20,9 @@ class Kuul(pygame.sprite.Sprite):
 
     def muudaSuund(self):
         #Jah uuendab suunaga kuuli image suunda
-        self.suund = pygame.Vector2(self.vektor).angle_to(pygame.Vector2(1, 0))
+        self.suund = pygame.Vector2(self.vektor).angle_to(pygame.Vector2(0, 1))
         self.rect = self.image.get_rect(center=(self.x, self.y))
-        self.image = pygame.transform.rotate(self.kuul, -self.suund)
+        self.image = pygame.transform.rotate(self.kuul, self.suund)
         pass
 
 
@@ -37,6 +37,7 @@ class Kuul(pygame.sprite.Sprite):
         uus_rect.center = (uus_x, uus_y)
 
         # Kontrollime kokkupõrkeid
+
         for sein in seinad:
             if uus_rect.colliderect(sein):
                 # Leiame kokkupõrke normaali täpsemalt
@@ -86,6 +87,8 @@ class Kuul(pygame.sprite.Sprite):
 
         # Uuendame suunda
         self.muudaSuund()
+        print(self.suund)
+        print(self)
 
         # Eluaeg
         if self.eluaeg:
