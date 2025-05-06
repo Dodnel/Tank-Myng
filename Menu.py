@@ -13,7 +13,7 @@ class Menyy:
         self.akna_suurus_x, self.akna_suurus_y = 640, 360
         self.aken.geometry(f"{self.akna_suurus_x}x{self.akna_suurus_y}")
         self.aken.resizable(False, False)
-        self.taustavarv = "#aa6c24"
+        self.taustavarv = "#cacaca"
         self.nupuvarv = "#d18d3e"
         self.aken.configure(background=self.taustavarv)
 
@@ -29,6 +29,13 @@ class Menyy:
         self.helipilt = ImageTk.PhotoImage(self.helipilt_on)
         self.helipilt_silt = tk.Label(self.aken, image=self.helipilt, bg=self.taustavarv, bd=0, cursor="hand2")
 
+        self.vaartus_m1 = tk.DoubleVar()
+        self.vaartus_m1.set(0)
+        self.vaartus_m2 = tk.DoubleVar()
+        self.vaartus_m2.set(0)
+        self.vaartus_m3 = tk.DoubleVar()
+        self.vaartus_m3.set(0)
+
         self.stardi_heli()
         self.loo_vidinad()
 
@@ -40,11 +47,47 @@ class Menyy:
         self.satete_aken = tk.Toplevel(self.aken)
         self.satete_aken.title("Sätted")
         self.satete_aken.geometry("400x300")
+        self.satete_aken.resizable(False, False)
 
-        tk.Label(self.satete_aken, text="Sätted", font=("Arial", 24)).pack(pady=80)
+        raam = tk.Frame(self.satete_aken)
+        raam.pack(fill="both", expand=True)
 
+        tahvel = tk.Canvas(raam, highlightthickness=0)
+        tahvel.pack(side="left", fill="both", expand=True)
 
-        tk.Button(self.satete_aken, text="Sulge", bg=self.nupuvarv, command=self.satete_aken.destroy, font=("Arial", 16)).pack(pady=20)
+        kerimisriba = tk.Scrollbar(raam, orient="vertical", command=tahvel.yview)
+        kerimisriba.pack(side="right", fill="y")
+
+        tahvel.configure(yscrollcommand=kerimisriba.set)
+
+        sisu_raam = tk.Frame(tahvel)
+        sisu_aken_id = tahvel.create_window((0, 0), window=sisu_raam, anchor="n")
+
+        def uuenda_scrolli_suurus(sündmus):
+            tahvel.configure(scrollregion=tahvel.bbox("all"))
+            tahvel.itemconfig(sisu_aken_id, width=sündmus.width)
+
+        sisu_raam.bind("<Configure>", uuenda_scrolli_suurus)
+        tahvel.bind("<Configure>", uuenda_scrolli_suurus)
+
+        tk.Label(sisu_raam, text="Sätted", font=("Arial", 24)).pack(pady=20)
+
+        raam1 = tk.Frame(sisu_raam)
+        raam1.pack(pady=10)
+        tk.Label(raam1, text="Muutuja1", font=("Arial", 14)).pack(side="left", pady=10)
+        tk.Scale(raam1, from_=0, to=1, resolution=0.1, orient=tk.HORIZONTAL,variable=self.vaartus_m1).pack(side="right", pady=2)
+
+        raam2 = tk.Frame(sisu_raam)
+        raam2.pack(pady=10)
+        tk.Label(raam2, text="Muutuja2", font=("Arial", 14)).pack(side="left", pady=10)
+        tk.Scale(raam2, from_=0, to=1, resolution=0.1, orient=tk.HORIZONTAL, variable=self.vaartus_m2).pack(side="right",
+                                                                                                           pady=2)
+        raam3 = tk.Frame(sisu_raam)
+        raam3.pack(pady=10)
+        tk.Label(raam3, text="Muutuja3", font=("Arial", 14)).pack(side="left", pady=10)
+        tk.Scale(raam3, from_=0, to=1, resolution=0.1, orient=tk.HORIZONTAL, variable=self.vaartus_m3).pack(side="right", pady=2)
+
+        tk.Button(sisu_raam, text="Sulge", bg=self.nupuvarv, command=self.satete_aken.destroy, font=("Arial", 16)).pack(pady=20)
 
     def stardi_heli(self):
         pygame.mixer.music.load(r"audio\Tanki_mangu_peamenyy_laul_copyrighted_trust.mp3")
