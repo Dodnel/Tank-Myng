@@ -1,6 +1,6 @@
 import pygame
 import Kaart,Menu,Kuul,Tank
-
+#s
 class Myng:
     def __init__(self): 
         pygame.init()
