@@ -23,8 +23,9 @@ class Kuul(pygame.sprite.Sprite):
         self.suund = pygame.Vector2(self.vektor).angle_to(pygame.Vector2(0, 1))
         self.rect = self.image.get_rect(center=(self.x, self.y))
         self.image = pygame.transform.rotate(self.kuul, self.suund)
-        pass
 
+    def kustutaObject(self):
+        del self
 
     def kalkuleeriLiikumine(self, seinad) -> None:
         # Salvestame eelmise asukoha
