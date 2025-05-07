@@ -33,7 +33,7 @@ class Tank(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=self.rect.center)
         self.mask = pygame.mask.from_surface(self.image)
 
-    def liigu(self, suund):
+    def liigu(self, suund,seinad):
         kiirus = 5
         kraadid = self.angle % 360
         xMuutja = kiirus * sin(radians(kraadid))
@@ -44,8 +44,15 @@ class Tank(pygame.sprite.Sprite):
         elif 90 < kraadid < 180:
             pass
 
+        rectKeskpunktRevert = self.rectKeskpunkt
+        rectRevert = self.rect
+
         self.rectKeskpunkt = (self.rectKeskpunkt[0] + xMuutja * suund, self.rectKeskpunkt[1] + yMuutja * suund)
         self.rect = self.image.get_rect(center=self.rectKeskpunkt)
+
+        if self.tangiCollisionSeinadCheck(seinad):
+            self.rectKeskpunkt = rectKeskpunktRevert
+            self.rect = rectRevert
 
     def tulista(self):
         toruVektor = pygame.Vector2.from_polar((self.h/2 + 10, -self.angle+ 90))
@@ -54,16 +61,9 @@ class Tank(pygame.sprite.Sprite):
 
         return Kuul( -self.angle + 90, 5, kuuliPunkt[0], kuuliPunkt[1], kuulSuurus=(5,10))
 
-    def getRect(self):
-        return self.rect
-
-    def joonistaTank(self):
-        return ""
-
     def tangiCollisionSeinadCheck(self,seinad):
+
         maskitavadSeinad = self.rect.collidelistall(seinad)
-        print(maskitavadSeinad)
-        overlapped = False
         if maskitavadSeinad:
             for sein in maskitavadSeinad:
                 sein = seinad[sein]
@@ -73,17 +73,16 @@ class Tank(pygame.sprite.Sprite):
                 offset_y = sein.top - self.rect.top
 
                 if self.mask.overlap(rect_mask, (offset_x, offset_y)):
-                    self.original_image.fill("red")
+                    return True
+            return False
 
-        else:
-            self.original_image.fill("green")
 
         # vyiks tagastada booleani
         # teeks liikumist nii et simuleerib tangi liikumist yhe frami vyrra eespool ja siis kui
         # peaks collidima siis mitte lubada.
 
 
-    def tankiKuuliCollision(self, kuuliGrupp) :
+    def tankiKuuliCollision(self, kuuliGrupp):
         kuulidHit = pygame.sprite.spritecollide(self, kuuliGrupp, True)
 
         if kuulidHit:

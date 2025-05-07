@@ -15,7 +15,7 @@ screen = pygame.display.set_mode((laius,kyrgus))
 
 kaart = Kaart(resolutsioon=resolutsioon,tileSuurus=50)
 #kuul = Kuul()
-tank = Tank(100, 50, 20, 30, (128, 0, 255))
+tank = Tank(75, 50, 20, 30, (128, 0, 255))
 
 
 kuul = Kuul(40,10,315,317, (5,10))
@@ -82,7 +82,7 @@ while True:
 
     if nuppAll:
         tank.keera(vajutus)
-    tank.liigu(vajutus2)
+    tank.liigu(vajutus2,seinad)
     screen.fill("white")
 
     for sein in seinad:
