@@ -76,24 +76,26 @@ class Tank(pygame.sprite.Sprite):
 
         maskitavadSeinad = self.rect.collidelistall(seinad)
         if maskitavadSeinad:
-            vyhimKaugus = float('inf')
+#            vyhimKaugus = float('inf')
+#            for sein in maskitavadSeinad: #mingil moel vyimaldab tangil seintes lybi minna
+#                #eeldan et see on seinte nurkade pyrast Kui parandada, siis peaksin mergima sirged seinad,
+#                sein = seinad[sein]
+#                punkt1 = sein.center
+#                punkt2 = self.rect.center
+#
+#                if dist(punkt1,punkt2) < vyhimKaugus:
+#                    lyhimSein = sein
             for sein in maskitavadSeinad:
+
                 sein = seinad[sein]
-                punkt1 = sein.center
-                punkt2 = self.rect.center
+                rect_mask = pygame.mask.Mask((sein.width, sein.height))
+                rect_mask.fill()
+                offset_x = sein.left - self.rect.left
+                offset_y = sein.top - self.rect.top
 
-                if dist(punkt1,punkt2) < vyhimKaugus:
-                    lyhimSein = sein
-
-            sein = lyhimSein
-            rect_mask = pygame.mask.Mask((sein.width, sein.height))
-            rect_mask.fill()
-            offset_x = sein.left - self.rect.left
-            offset_y = sein.top - self.rect.top
-
-            if self.mask.overlap(rect_mask, (offset_x, offset_y)):
-                return True
-            return False
+                if self.mask.overlap(rect_mask, (offset_x, offset_y)):
+                    return True
+        return False
 
 
         # vyiks tagastada booleani
