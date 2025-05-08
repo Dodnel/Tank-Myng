@@ -5,7 +5,7 @@ Kui ei pane seda recti peame kontrollima kas ta kontrollib kõik seintega mapi p
 
 """
 import pygame
-from math import sin, cos,sqrt, radians
+from math import sin, cos,sqrt, radians, dist
 from Kuul import Kuul
 
 #see on varastatud, ma vist teen yppimise pyhimyttel ise mingi hetk
@@ -25,17 +25,28 @@ class Tank(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
         self.h = h
 
-    def keera(self, suund):
+    def keera(self, suund,seinad):
+        angleRevert = self.angle
         if suund == 1:
             self.angle += 5
         elif suund == -1:
             self.angle -= 5
+        imageRevert = self.image
+        rectRevert = self.rect
+        maskRevert = self.mask
+
         self.image = pygame.transform.rotate(self.original_image, self.angle)
         self.rect = self.image.get_rect(center=self.rect.center)
         self.mask = pygame.mask.from_surface(self.image)
 
+        if self.tangiCollisionSeinadCheck(seinad):
+            self.image = imageRevert
+            self.rect = rectRevert
+            self.mask = maskRevert
+            self.angle = angleRevert
+
     def liigu(self, suund,seinad):
-        kiirus = 5
+        kiirus = 1
         kraadid = self.angle % 360
         xMuutja = kiirus * sin(radians(kraadid))
         yMuutja = kiirus * cos(radians(kraadid))
@@ -66,15 +77,23 @@ class Tank(pygame.sprite.Sprite):
 
         maskitavadSeinad = self.rect.collidelistall(seinad)
         if maskitavadSeinad:
+            vyhimKaugus = float('inf')
             for sein in maskitavadSeinad:
                 sein = seinad[sein]
-                rect_mask = pygame.mask.Mask((sein.width, sein.height))
-                rect_mask.fill()
-                offset_x = sein.left - self.rect.left
-                offset_y = sein.top - self.rect.top
+                punkt1 = sein.center
+                punkt2 = self.rect.center
 
-                if self.mask.overlap(rect_mask, (offset_x, offset_y)):
-                    return True
+                if dist(punkt1,punkt2) < vyhimKaugus:
+                    lyhimSein = sein
+
+            sein = lyhimSein
+            rect_mask = pygame.mask.Mask((sein.width, sein.height))
+            rect_mask.fill()
+            offset_x = sein.left - self.rect.left
+            offset_y = sein.top - self.rect.top
+
+            if self.mask.overlap(rect_mask, (offset_x, offset_y)):
+                return True
             return False
 
 
