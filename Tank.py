@@ -2,7 +2,6 @@
 Tank on tõenaoliselt sprite? Maskiga? Surfaceiga?.
 Igastahes collisioneid vaadates, paneme talle peale ühe nähtamatu recti, mis kohati väheneb kui palju/mis Seinu peame checkima collisioni jaoks
 Kui ei pane seda recti peame kontrollima kas ta kontrollib kõik seintega mapi peal mis ei ole praktiline
-
 """
 import pygame
 from math import sin, cos,sqrt, radians, dist
@@ -67,11 +66,11 @@ class Tank(pygame.sprite.Sprite):
             self.rect = rectRevert
 
     def tulista(self):
-        toruVektor = pygame.Vector2.from_polar((self.h/2 + 10, self.angle))
+        toruVektor = pygame.Vector2.from_polar((self.h/2 + 10, -self.angle+ 90))
         kuuliPunkt = self.rectKeskpunkt + toruVektor
         print(self.angle)
 
-        return Kuul(self.angle, 5, kuuliPunkt[0], kuuliPunkt[1], kuulSuurus=(5,10))
+        return Kuul( -self.angle + 90, 5, kuuliPunkt[0], kuuliPunkt[1], kuulSuurus=(5,10))
 
     def tangiCollisionSeinadCheck(self,seinad):
 
