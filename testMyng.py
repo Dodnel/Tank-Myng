@@ -18,16 +18,20 @@ kaart = Kaart(resolutsioon=resolutsioon,tileSuurus=50)
 tank = Tank(25, 25, 20, 30, (128, 0, 255))
 
 
-kuul = Kuul(40,10,315,317, (5,10))
-
-kuulid = [kuul]
+tankid = [tank]
 
 
-tankidGrupp = pygame.sprite.Group(tank)
+kuulid = []
 
-kuulidGrupp = pygame.sprite.Group(kuul)
 
-kaart.randomizedKruskalAlgoritm()
+tankidGrupp = pygame.sprite.Group()
+
+for tankA in tankid:
+    tankidGrupp.add(tankA)
+
+kuulidGrupp = pygame.sprite.Group()
+
+kaart.lisaSeinad()
 
 seinad = kaart.drawMap()
 
@@ -46,7 +50,6 @@ while True:
                 vajutus = 1
             elif keys[pygame.K_d]:
                 vajutus = -1
-
             if keys[pygame.K_w]:
                 vajutus2 = 1
             elif keys[pygame.K_s]:
@@ -59,6 +62,7 @@ while True:
                 uusKuul = tank.tulista()
                 kuulid.append(uusKuul)
                 kuulidGrupp.add(uusKuul)
+
 
         if event.type == pygame.KEYUP:
             keys = pygame.key.get_pressed()
@@ -83,16 +87,26 @@ while True:
     if nuppAll:
         tank.keera(vajutus,seinad)
     tank.liigu(vajutus2,seinad)
+
     screen.fill("white")
 
     for sein in seinad:
         pygame.draw.rect(screen,"black", sein)
 
-    for kuul in kuulid:
-        kuul.kalkuleeriLiikumine(seinad)
+    for kuul in kuulid[:]:
+        if kuul.alive():
+            kuul.kalkuleeriLiikumine(seinad)
+        else:
+            kuulid.remove(kuul)
 
-    tank.tankiKuuliCollision(kuulidGrupp)
-    tank.tangiCollisionSeinadCheck(seinad)
+    for tank in tankid[:]:
+        if tank.alive():
+            tank.tankiKuuliCollision(kuulidGrupp)
+            tank.tangiCollisionSeinadCheck(seinad)
+        else:
+            tankid.remove(tank)
+
+
 
     tankidGrupp.draw(screen)
     kuulidGrupp.draw(screen)
