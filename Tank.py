@@ -107,5 +107,6 @@ class Tank(pygame.sprite.Sprite):
         kuulidHit = pygame.sprite.spritecollide(self, kuuliGrupp, True)
 
         if kuulidHit:
-
             kuulidHit.clear()
+            self.kill()
+
