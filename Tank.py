@@ -45,7 +45,7 @@ class Tank(pygame.sprite.Sprite):
             self.angle = angleRevert
 
     def liigu(self, suund,seinad):
-        kiirus = 1
+        kiirus = 5
         kraadid = self.angle % 360
         xMuutja = kiirus * sin(radians(kraadid))
         yMuutja = kiirus * cos(radians(kraadid))
@@ -68,7 +68,7 @@ class Tank(pygame.sprite.Sprite):
     def tulista(self):
         toruVektor = pygame.Vector2.from_polar((self.h/2 + 10, -self.angle+ 90))
         kuuliPunkt = self.rectKeskpunkt + toruVektor
-        print(self.angle)
+
 
         return Kuul( -self.angle + 90, 5, kuuliPunkt[0], kuuliPunkt[1], kuulSuurus=(5,10))
 
@@ -107,6 +107,5 @@ class Tank(pygame.sprite.Sprite):
         kuulidHit = pygame.sprite.spritecollide(self, kuuliGrupp, True)
 
         if kuulidHit:
-            print("Pahhh")
 
             kuulidHit.clear()

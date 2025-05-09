@@ -25,7 +25,7 @@ class Kuul(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(self.kuul, self.suund)
 
     def kustutaObject(self):
-        del self
+        self.kill()
 
     def kalkuleeriLiikumine(self, seinad) -> None:
         # Salvestame eelmise asukoha
@@ -88,11 +88,11 @@ class Kuul(pygame.sprite.Sprite):
 
         # Uuendame suunda
         self.muudaSuund()
-        print(self.suund)
+        print(self.eluaeg)
         print(self)
 
         # Eluaeg
         if self.eluaeg:
             self.eluaeg -= 1
         else:
-            self.kill()
+            self.kustutaObject()
