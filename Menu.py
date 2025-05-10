@@ -2,7 +2,7 @@ import tkinter as tk
 import pygame
 from PIL import Image, ImageTk
 
-#s
+
 class Menyy:
     def __init__(self):
         pygame.init()
