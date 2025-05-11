@@ -1,18 +1,32 @@
-import pygame
+import pygame, math
 
 class Kuul(pygame.sprite.Sprite):
-    def __init__(self, suund, kiirus, x, y, kuulSuurus=(5,10), varv=(125,125,125), eluaeg=1000):
+    def __init__(self, suund, kiirus, x, y, powerupSuurus = False, powerupKiirus = False, powerupCosinus = False, powerupLaser = False):
         pygame.sprite.Sprite.__init__(self)
         self.x = x
         self.y = y
         self.suund = suund
-        self.kiirus = kiirus
-        self.eluaeg = eluaeg
-        #polaar kordinaatidest vektor
-        self.vektor = pygame.Vector2.from_polar((kiirus, suund))
 
-        self.kuul = pygame.Surface(kuulSuurus, pygame.SRCALPHA)
-        self.kuul.fill(varv)
+        self.eluaeg = 500
+        self.aeg = self.eluaeg
+        #polaar kordinaatidest otseLiikumiseVektor
+
+        self.suunaVektor = pygame.Vector2()
+        self.powerupCosinus = powerupCosinus
+        self.powerupLaser = powerupLaser
+        #ei tee midagi hetkel
+
+        if powerupSuurus:
+            self.kuul = pygame.Surface((10,20), pygame.SRCALPHA)
+        else:
+            self.kuul = pygame.Surface((5, 10), pygame.SRCALPHA)
+
+        if powerupKiirus:
+            self.otseLiikumiseVektor = pygame.Vector2.from_polar((2 * kiirus, suund))
+        else:
+            self.otseLiikumiseVektor = pygame.Vector2.from_polar((kiirus, suund))
+
+        self.kuul.fill((125,125,125))
         self.image = self.kuul
         self.rect = self.image.get_rect(center=(x, y))
         self.mask = pygame.mask.from_surface(self.image)
@@ -20,7 +34,7 @@ class Kuul(pygame.sprite.Sprite):
 
     def muudaSuund(self):
         #Jah uuendab suunaga kuuli image suunda
-        self.suund = pygame.Vector2(self.vektor).angle_to(pygame.Vector2(0, 1))
+        self.suund = pygame.Vector2(self.suunaVektor).angle_to(pygame.Vector2(0, 1))
         self.rect = self.image.get_rect(center=(self.x, self.y))
         self.image = pygame.transform.rotate(self.kuul, self.suund)
 
@@ -31,11 +45,28 @@ class Kuul(pygame.sprite.Sprite):
         # Salvestame eelmise asukoha
         eel_x, eel_y = self.x, self.y
 
-        # Arvutame uue asukoha
-        uus_x = self.x + self.vektor.x
-        uus_y = self.y + self.vektor.y
-        uus_rect = self.rect.copy()
-        uus_rect.center = (uus_x, uus_y)
+        if self.powerupCosinus:
+            # Arvutame uue asukoha (sinusoidne liikumine)
+            cos_offset = math.cos((self.aeg-self.eluaeg)*math.pi/30) * 3
+
+            cosVector = pygame.Vector2(-self.otseLiikumiseVektor.y, self.otseLiikumiseVektor.x).normalize() * cos_offset
+
+            uus_x = self.x + self.otseLiikumiseVektor.x + cosVector.x
+            uus_y = self.y + self.otseLiikumiseVektor.y + cosVector.y
+
+            self.suunaVektor = pygame.Vector2(self.otseLiikumiseVektor.x + cosVector.x, self.otseLiikumiseVektor.y + cosVector.y)
+
+            uus_rect = self.rect.copy()
+            uus_rect.center = (uus_x, uus_y)
+        else:
+            # Arvutame uue asukoha (tavaline liikumine)
+            uus_x = self.x + self.otseLiikumiseVektor.x
+            uus_y = self.y + self.otseLiikumiseVektor.y
+
+            self.suunaVektor = self.otseLiikumiseVektor
+
+            uus_rect = self.rect.copy()
+            uus_rect.center = (uus_x, uus_y)
 
         # Kontrollime kokkupõrkeid
 
@@ -67,8 +98,8 @@ class Kuul(pygame.sprite.Sprite):
                     porge_normaal = porge_normaal.normalize()
 
                     # Peegeldame kiirusvektorit normaali järgi
-                    tapp_korrutis = self.vektor.dot(porge_normaal)
-                    self.vektor = self.vektor - 2 * tapp_korrutis * porge_normaal
+                    tapp_korrutis = self.otseLiikumiseVektor.dot(porge_normaal)
+                    self.otseLiikumiseVektor = self.otseLiikumiseVektor - 2 * tapp_korrutis * porge_normaal
 
                     # Tagastame kuuli seest välja, lisades väikese offseti
                     tagasi_kaugus = min_ule + 1  # +1 et kindlasti seest välja
@@ -77,7 +108,7 @@ class Kuul(pygame.sprite.Sprite):
                     self.rect.center = (self.x, self.y)
 
                     # Vähendame veidi kiirust põrkel (optionaalne)
-                    self.vektor *= 0.99
+                    self.otseLiikumiseVektor *= 0.99
                     break
 
         # Kui kokkupõrget polnud, liigume edasi
@@ -89,7 +120,6 @@ class Kuul(pygame.sprite.Sprite):
         # Uuendame suunda
         self.muudaSuund()
         print(self.eluaeg)
-        print(self)
 
         # Eluaeg
         if self.eluaeg:
