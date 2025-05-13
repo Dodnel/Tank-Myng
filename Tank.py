@@ -66,11 +66,12 @@ class Tank(pygame.sprite.Sprite):
             self.rect = rectRevert
 
     def tulista(self):
-        toruVektor = pygame.Vector2.from_polar((self.h/2 + 15, -self.angle+ 90))
+
+        toruVektor = pygame.Vector2.from_polar((self.h/2 + 9, -self.angle+ 90))
         kuuliPunkt = self.rectKeskpunkt + toruVektor
 
 
-        return Kuul( -self.angle + 90, 5, kuuliPunkt[0], kuuliPunkt[1], powerupCosinus=True)
+        return Kuul( -self.angle + 90, 5, kuuliPunkt[0], kuuliPunkt[1], powerupCosinus=False, powerupLaser=False, powerupKiirus=False, powerupSuurus=False)
 
     def tangiCollisionSeinadCheck(self,seinad):
 

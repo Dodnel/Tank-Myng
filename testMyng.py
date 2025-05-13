@@ -5,7 +5,7 @@ from Kaart import Kaart
 from Kuul import Kuul
 from pygame.locals import *
 from Tank import Tank
-resolutsioon = "900x500"
+resolutsioon = "960x600"
 
 laius, kyrgus = map(int,resolutsioon.split("x"))
 
@@ -13,7 +13,7 @@ pygame.init()
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((laius,kyrgus))
 
-kaart = Kaart(resolutsioon=resolutsioon,tileSuurus=50)
+kaart = Kaart(resolutsioon=resolutsioon,tileSuurus=60)
 #kuul = Kuul()
 tank = Tank(25, 25, 20, 30, (128, 0, 255))
 
@@ -31,7 +31,7 @@ for tankA in tankid:
 
 kuulidGrupp = pygame.sprite.Group()
 
-kaart.lisaSeinad()
+kaart.randomizedKruskalAlgoritm()
 
 seinad = kaart.drawMap()
 

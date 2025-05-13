@@ -41,13 +41,17 @@ class Kuul(pygame.sprite.Sprite):
     def kustutaObject(self):
         self.kill()
 
+
+    def saaKuuliSuurus(self):
+        return self.kuul.get_size()[0]
+
     def kalkuleeriLiikumine(self, seinad) -> None:
         # Salvestame eelmise asukoha
         eel_x, eel_y = self.x, self.y
 
         if self.powerupCosinus:
             # Arvutame uue asukoha (sinusoidne liikumine)
-            cos_offset = math.cos((self.aeg-self.eluaeg)*math.pi/30) * 3
+            cos_offset = math.cos((self.aeg-self.eluaeg)*math.pi/10) * 5
 
             cosVector = pygame.Vector2(-self.otseLiikumiseVektor.y, self.otseLiikumiseVektor.x).normalize() * cos_offset
 
