@@ -25,6 +25,9 @@ class Tank(pygame.sprite.Sprite):
         self.h = h
 
     def keera(self, suund,seinad):
+        if suund == 0:
+            return
+
         angleRevert = self.angle
         if suund == 1:
             self.angle += 5
@@ -45,6 +48,8 @@ class Tank(pygame.sprite.Sprite):
             self.angle = angleRevert
 
     def liigu(self, suund,seinad):
+        if suund == 0:
+            return
         kiirus = 5
         kraadid = self.angle % 360
         xMuutja = kiirus * sin(radians(kraadid))
@@ -68,7 +73,6 @@ class Tank(pygame.sprite.Sprite):
     def tulista(self):
         toruVektor = pygame.Vector2.from_polar((self.h/2 + 15, -self.angle+ 90))
         kuuliPunkt = self.rectKeskpunkt + toruVektor
-
 
         return Kuul( -self.angle + 90, 5, kuuliPunkt[0], kuuliPunkt[1], powerupCosinus=True)
 

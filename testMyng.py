@@ -5,6 +5,7 @@ from Kaart import Kaart
 from Kuul import Kuul
 from pygame.locals import *
 from Tank import Tank
+from liikumine import Liikumine
 resolutsioon = "900x500"
 
 laius, kyrgus = map(int,resolutsioon.split("x"))
@@ -13,14 +14,22 @@ pygame.init()
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((laius,kyrgus))
 
-kaart = Kaart(resolutsioon=resolutsioon,tileSuurus=50)
+kaart = Kaart(resolutsioon=resolutsioon,tileSuurus=150)
 #kuul = Kuul()
 tank = Tank(25, 25, 20, 30, (128, 0, 255))
 
+tank2 = Tank(25, 25, 20, 30, (0, 0, 255))
 
-tankid = [tank]
+tank3 = Tank(25, 25, 20, 30, (128, 0, 0))
 
+tank4 = Tank(25, 25, 20, 30, (0, 255, 0))
 
+tankid = [tank,tank2,tank3,tank4]
+
+liikumine = Liikumine(tankid,[{"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"},
+                                            {"f": "edasi", "v": "tagasi", "c": "vasakule", "b": "paremale", "o": "tulista"},
+                                            {"y": "edasi", "h": "tagasi", "g": "vasakule", "j": "paremale", "u": "tulista"},
+                                            {"k": "edasi", ",": "tagasi", "m": "vasakule", ".": "paremale", "2": "tulista"}])
 kuulid = []
 
 
@@ -31,7 +40,7 @@ for tankA in tankid:
 
 kuulidGrupp = pygame.sprite.Group()
 
-kaart.lisaSeinad()
+kaart.randomizedKruskalAlgoritm()
 
 seinad = kaart.drawMap()
 
@@ -43,50 +52,10 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-        if event.type == pygame.KEYDOWN:
-            keys = pygame.key.get_pressed()
-
-            if keys[pygame.K_a]:
-                vajutus = 1
-            elif keys[pygame.K_d]:
-                vajutus = -1
-            if keys[pygame.K_w]:
-                vajutus2 = 1
-            elif keys[pygame.K_s]:
-                vajutus2 = -1
-            else:
-                pass
-            nuppAll = True
-
-            if keys[pygame.K_f]:
-                uusKuul = tank.tulista()
-                kuulid.append(uusKuul)
-                kuulidGrupp.add(uusKuul)
-
-
-        if event.type == pygame.KEYUP:
-            keys = pygame.key.get_pressed()
-            if not keys[pygame.K_a]:
-                vajutus = 0
-                nuppAll = False
-            elif not keys[pygame.K_d]:
-                vajutus = 0
-                nuppAll = False
-            else:
-                pass
-
-            if not keys[pygame.K_w]:
-                vajutus2 = 0
-                nuppAll = False
-            elif not keys[pygame.K_s]:
-                vajutus2 = 0
-                nuppAll = False
-
-
-
-    if nuppAll:
-        tank.keera(vajutus,seinad)
-    tank.liigu(vajutus2,seinad)
+    keys = pygame.key.get_pressed()
+    pressed_keys = [pygame.key.name(k) for k in range(len(keys)) if keys[k]]
+    print(pressed_keys)
+    liikumine.teeLiigutus(pressed_keys,seinad)
 
     screen.fill("white")
 
