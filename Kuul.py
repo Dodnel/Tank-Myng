@@ -123,7 +123,6 @@ class Kuul(pygame.sprite.Sprite):
 
         # Uuendame suunda
         self.muudaSuund()
-        print(self.eluaeg)
 
         # Eluaeg
         if self.eluaeg:
