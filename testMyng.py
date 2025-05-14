@@ -1,9 +1,8 @@
-from winreg import KEY_WRITE
+
 
 import pygame, sys
 from Kaart import Kaart
 from Kuul import Kuul
-from pygame.locals import *
 from Tank import Tank
 from liikumine import Liikumine
 resolutsioon = "900x500"
@@ -77,15 +76,15 @@ while True:
 
     for tank in tankid[:]:
         if tank.alive():
-            tank.tankiKuuliCollision(kuulidGrupp)
             tank.tangiCollisionSeinadCheck(seinad)
-        else:
-            tankid.remove(tank)
-
+            if tank.tankiKuuliCollision(kuulidGrupp):
+                tank.kill()
+                liikumine.kustutaTank(tank)
 
 
     tankidGrupp.draw(screen)
     kuulidGrupp.draw(screen)
+
 
 
     pygame.display.flip()

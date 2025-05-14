@@ -16,7 +16,7 @@ class Liikumine:
     def __init__(self, tankid: list, liikumisProfiilid: list):
         self.tankid = tankid
         self.liikumisProfiilid = liikumisProfiilid
-        self.tulistas = [False] * len(tankid)
+        self.tulistas =  [False] * len(tankid)
 
     def teeLiigutus(self,nupuVajutused, seinad):
         nupuVajutused = set(nupuVajutused)
@@ -54,3 +54,9 @@ class Liikumine:
             tank.keera(keeramisSuund, seinad)
 
         return kuulid
+
+    def kustutaTank(self, tank):
+        kustutamisIndex = self.tankid.index(tank)
+        del self.liikumisProfiilid[kustutamisIndex]
+        del self.tankid[kustutamisIndex]
+        del self.tulistas[kustutamisIndex]

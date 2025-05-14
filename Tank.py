@@ -76,7 +76,7 @@ class Tank(pygame.sprite.Sprite):
         kuuliPunkt = self.rectKeskpunkt + toruVektor
 
 
-        return Kuul( -self.angle + 90, 5, kuuliPunkt[0], kuuliPunkt[1], powerupCosinus=False, powerupLaser=False, powerupKiirus=False, powerupSuurus=False)
+        return Kuul( -self.angle + 90, 1, kuuliPunkt[0], kuuliPunkt[1], powerupCosinus=False, powerupLaser=False, powerupKiirus=False, powerupSuurus=False)
 
     def tangiCollisionSeinadCheck(self,seinad):
 
@@ -110,9 +110,9 @@ class Tank(pygame.sprite.Sprite):
 
 
     def tankiKuuliCollision(self, kuuliGrupp):
-        kuulidHit = pygame.sprite.spritecollide(self, kuuliGrupp, True)
-
-        if kuulidHit:
-            kuulidHit.clear()
-            #self.kill()
+        hit = []
+        for i in kuuliGrupp:
+            if pygame.sprite.collide_mask(self,i):
+                i.kill()
+                return True
 
