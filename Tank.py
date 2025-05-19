@@ -23,6 +23,7 @@ class Tank(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=self.rectKeskpunkt)
         self.mask = pygame.mask.from_surface(self.image)
         self.h = h
+        self.kiirus = 3
 
     def keera(self, suund,seinad):
         if suund == 0:
@@ -50,10 +51,9 @@ class Tank(pygame.sprite.Sprite):
     def liigu(self, suund,seinad):
         if suund == 0:
             return
-        kiirus = 5
         kraadid = self.angle % 360
-        xMuutja = kiirus * sin(radians(kraadid))
-        yMuutja = kiirus * cos(radians(kraadid))
+        xMuutja = self.kiirus * sin(radians(kraadid))
+        yMuutja = self.kiirus * cos(radians(kraadid))
 
         if 0 < kraadid < 90:
             pass
@@ -76,7 +76,7 @@ class Tank(pygame.sprite.Sprite):
         kuuliPunkt = self.rectKeskpunkt + toruVektor
 
 
-        return Kuul( -self.angle + 90, 1, kuuliPunkt[0], kuuliPunkt[1], powerupCosinus=False, powerupLaser=False, powerupKiirus=False, powerupSuurus=False)
+        return Kuul( -self.angle + 90, 1 + self.kiirus, kuuliPunkt[0], kuuliPunkt[1], powerupCosinus=False, powerupLaser=False, powerupKiirus=False, powerupSuurus=False)
 
     def tangiCollisionSeinadCheck(self,seinad):
 
@@ -116,3 +116,5 @@ class Tank(pygame.sprite.Sprite):
                 i.kill()
                 return True
 
+    def saaKiirus(self):
+        return self.kiirus

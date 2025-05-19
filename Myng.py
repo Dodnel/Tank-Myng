@@ -1,5 +1,5 @@
 import pygame
-import Kaart,Menu,Kuul,Tank
+import Kaart,Menu,Kuul,Tank,liikumine
 #s
 class Myng:
     def __init__(self): 
@@ -7,9 +7,13 @@ class Myng:
         self.ekraan = pygame.display.set_mode((800, 600))
         self.clock = pygame.time.Clock()
         self.kaart = Kaart
-        self.tank1 = Tank()
-        self.tank2 = Tank()
+        self.tankid = []
         self.kuulid = []
+
+        self.tankidGrupp = pygame.sprite.Group()
+        self.kuulidGrupp = pygame.sprite.Group()
+
+
 
         self.active = False
 
