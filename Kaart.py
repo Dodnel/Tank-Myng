@@ -6,9 +6,37 @@ class Kaart:
         self.tileSuurus = tileSuurus
         self.kaardiLaius, self.kaardiKyrgus = self.teiseldaKaardiResolutsioon()
         if customMap == "":
-            self.kaart = self.genereeriMap()
+            self.kaart = self.genereeriKaart()
         else:
             self.kaart = customMap
+        self.spawnKaart = []
+
+
+    def leiaTankideleTekkeKohad(self, tankid):
+        self.spawnKaart = []
+
+        for i in range(self.kaardiLaius):
+            rida = []
+            for j in range(self.kaardiKyrgus):
+                rida.append((i,j))
+
+            self.spawnKaart.append(rida)
+
+
+
+        def looRistkylik(kaheMyytmelineJada,x0,y0,x1,y1):
+            for i in range(y0,y1):
+                for j in range(x0,x1):
+                    kaheMyytmelineJada[i][j] = "#"
+
+            return kaheMyytmelineJada
+
+
+
+
+
+
+
 
     def teiseldaKaardiResolutsioon(self):
         ekraaniX,ekraaniY = map(int,self.resolutsioon.split("x"))
@@ -54,9 +82,10 @@ class Kaart:
                     tagastavadRectid.append(pygame.Rect(
                         reaIndex * self.tileSuurus, (reaArv + 1) * self.tileSuurus - seinaPaksus, self.tileSuurus,seinaPaksus
                     ))
+
         return tagastavadRectid
 
-    def genereeriMap(self):
+    def genereeriKaart(self):
         kaart = []
         for i in range(self.kaardiKyrgus):
             rida = []
@@ -132,6 +161,12 @@ class Kaart:
         self.kaart[0][len(self.kaart[0]) - 1] = "NE"
         self.kaart[len(self.kaart) - 1][0] = "SW"
         self.kaart[len(self.kaart) - 1][len(self.kaart[0]) - 1] = "SE"
+
+    def lammutaKaart(self):
+        for rida in range(len(self.kaart)):
+            for veerg in range(len(self.kaart)):
+                self.kaart[rida][veerg] = ""
+
 
 if __name__ == "__main__":
     kaart = Kaart(resolutsioon="1900x500")

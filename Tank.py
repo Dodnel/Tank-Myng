@@ -50,7 +50,7 @@ class Tank(pygame.sprite.Sprite):
     def liigu(self, suund,seinad):
         if suund == 0:
             return
-        kiirus = 5
+        kiirus = 3
         kraadid = self.angle % 360
         xMuutja = kiirus * sin(radians(kraadid))
         yMuutja = kiirus * cos(radians(kraadid))
