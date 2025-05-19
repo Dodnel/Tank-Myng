@@ -1,3 +1,5 @@
+from random import randint
+
 import pygame, random
 #s
 class Kaart:
@@ -12,24 +14,35 @@ class Kaart:
         self.spawnKaart = []
 
 
-    def leiaTankideleTekkeKohad(self, tankid):
+    def leiaTankideleTekkeKohad(self, tankidArv):
         self.spawnKaart = []
+        self.voimalikudKohad = []
 
         for i in range(self.kaardiLaius):
             rida = []
             for j in range(self.kaardiKyrgus):
                 rida.append((i,j))
+                self.voimalikudKohad.append((i,j))
 
             self.spawnKaart.append(rida)
-
-
 
         def looRistkylik(kaheMyytmelineJada,x0,y0,x1,y1):
             for i in range(y0,y1):
                 for j in range(x0,x1):
-                    kaheMyytmelineJada[i][j] = "#"
+                    try:
+                        kaheMyytmelineJada[i][j] = "#"
+                    except:
+                        pass
 
             return kaheMyytmelineJada
+
+        for i in range(tankidArv, -1, -1):
+            tankiX, tankiY  = randint(0, self.kaardiLaius), randint(0, self.kaardiKyrgus)
+
+            blokk = looRistkylik(self.spawnKaart, tankiX-i, tankiY-i, tankiX+i, tankiY+i)
+
+
+        return blokk
 
 
 
@@ -170,6 +183,5 @@ class Kaart:
 
 if __name__ == "__main__":
     kaart = Kaart(resolutsioon="1900x500")
-    kaart.randomizedKruskalAlgoritm()
-    for rida in kaart.kaart:
-        print(rida)
+
+    print(kaart.leiaTankideleTekkeKohad(2))
