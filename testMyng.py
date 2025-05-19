@@ -2,7 +2,7 @@
 
 import pygame, sys
 from Kaart import Kaart
-from Kuul import Kuul
+
 from Tank import Tank
 from liikumine import Liikumine
 resolutsioon = "900x500"
