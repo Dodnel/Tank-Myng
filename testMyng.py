@@ -5,7 +5,7 @@ from Kaart import Kaart
 
 from Tank import Tank
 from liikumine import Liikumine
-resolutsioon = "900x500"
+resolutsioon = "1900x800"
 
 laius, kyrgus = map(int,resolutsioon.split("x"))
 
@@ -13,7 +13,7 @@ pygame.init()
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((laius,kyrgus))
 
-kaart = Kaart(resolutsioon=resolutsioon,tileSuurus=150)
+kaart = Kaart(resolutsioon=resolutsioon,tileSuurus=50)
 #kuul = Kuul()
 tank = Tank(25, 25, 20, 30, (128, 0, 255))
 
@@ -30,9 +30,9 @@ tank4 = Tank(25, 25, 20, 30, (0, 255, 0))
 #                                            {"y": "edasi", "h": "tagasi", "g": "vasakule", "j": "paremale", "u": "tulista"},
 #                                            {"k": "edasi", ",": "tagasi", "m": "vasakule", ".": "paremale", "2": "tulista"}])
 
-tankid = [tank]
+tankid = [tank,tank2]
 
-liikumine = Liikumine(tankid, [{"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}])
+liikumine = Liikumine(tankid, [{"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"f": "edasi", "v": "tagasi", "c": "vasakule", "b": "paremale", "o": "tulista"}])
 
 kuulid = []
 

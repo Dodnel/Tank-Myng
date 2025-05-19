@@ -3,6 +3,15 @@ import pygame
 from PIL import Image, ImageTk
 
 
+"""
+TODO TONY
+
+tanki arvu valimine ja sealt syltuvalt siis
+
+"""
+
+
+
 class Menyy:
     def __init__(self):
         pygame.init()

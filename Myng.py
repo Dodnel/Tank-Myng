@@ -1,36 +1,44 @@
 import pygame
 import Kaart,Menu,Kuul,Tank,liikumine
+import sys
 #s
 class Myng:
-    def __init__(self): 
+    def __init__(self,resolutsioon, tileSuurus, tankideLiikumisProfiilid):
         pygame.init()
         self.ekraan = pygame.display.set_mode((800, 600))
         self.clock = pygame.time.Clock()
-        self.kaart = Kaart
-        self.tankid = []
-        self.kuulid = []
-
-        self.tankidGrupp = pygame.sprite.Group()
-        self.kuulidGrupp = pygame.sprite.Group()
+        self.seinad = []
+        self.kaart = Kaart.Kaart(resolutsioon, tileSuurus)
+        self.tankideLiikumine = tankideLiikumisProfiilid
 
 
+    def looKaart(self):
+        self.kaart.lammutaKaart()
+        self.kaart.randomizedKruskalAlgoritm()
+        self.seinad = self.kaart.drawMap()
+        pass
 
-        self.active = False
+    def looTankid(self):
+        tekkeKohad = self.kaart.leiaTankideleTekkeKohad(len(self.tankideLiikumine))
+
+        pass
+
+
+    def nullindaSkoor(self):
+        pass
+
+
+
 
     def events(self):
-        for event in pygame.event.get():
-            pass
+        pass
 
     def collisionCheck(self):
         pass
 
     def run(self):
-        while True:
-            self.clock.tick(60)
-            if not self.active:
-                self.kaart.drawMap(self.ekraan)
-                self.tank1.drawTank(self.ekraan)
-                self.tank2.drawTank(self.ekraan)
-                for kuul in self.kuulid:
-                    kuul.drawKuul(self.ekraan)
-                self.collisionCheck()
+        nullindaSkoor()
+        looKaart()
+        looTankid()
+
+        pass

@@ -1,7 +1,7 @@
 import pygame, random
 #s
 class Kaart:
-    def __init__(self, resolutsioon="900x900",customMap="",tileSuurus=50):
+    def __init__(self, resolutsioon="900x900",tileSuurus=50,customMap=""):
         self.resolutsioon = resolutsioon
         self.tileSuurus = tileSuurus
         self.kaardiLaius, self.kaardiKyrgus = self.teiseldaKaardiResolutsioon()
