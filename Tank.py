@@ -25,6 +25,12 @@ class Tank(pygame.sprite.Sprite):
         self.h = h
         self.kiirus = 3
 
+        self.salve_maht = 5
+        self.salv = self.salve_maht
+        self.laadib = False
+        self.laadimise_algus = None
+        self.laadimise_kestus = 5000
+
     def keera(self, suund,seinad):
         if suund == 0:
             return
@@ -71,12 +77,27 @@ class Tank(pygame.sprite.Sprite):
             self.rect = rectRevert
 
     def tulista(self):
+        if self.laadib:
+            return None
 
-        toruVektor = pygame.Vector2.from_polar((self.h/2 + 9, -self.angle+ 90))
-        kuuliPunkt = self.rectKeskpunkt + toruVektor
+        if self.salv > 0:
+            self.salv -= 1
+            if self.salv == 0:
+                self.laadib = True
+                self.laadimise_algus = pygame.time.get_ticks()
+            toruVektor = pygame.Vector2.from_polar((self.h / 2 + 9, -self.angle + 90))
+            kuuliPunkt = self.rectKeskpunkt + toruVektor
+            return Kuul(-self.angle + 90, 5, kuuliPunkt[0], kuuliPunkt[1],
+                        powerupCosinus=False, powerupLaser=False,
+                        powerupKiirus=False, powerupSuurus=False)
+        return None
 
-
-        return Kuul( -self.angle + 90, 1 + self.kiirus, kuuliPunkt[0], kuuliPunkt[1], powerupCosinus=False, powerupLaser=False, powerupKiirus=False, powerupSuurus=False)
+    def uuendaSalv(self):
+        if self.laadib:
+            aeg = pygame.time.get_ticks()
+            if aeg - self.laadimise_algus >= self.laadimise_kestus:
+                self.salv = self.salve_maht
+                self.laadib = False
 
     def tangiCollisionSeinadCheck(self,seinad):
 
@@ -118,3 +139,17 @@ class Tank(pygame.sprite.Sprite):
 
     def saaKiirus(self):
         return self.kiirus
+
+    def joonistaSalveIndikaator(self, ekraan):
+        # Joonista tank
+        ekraan.blit(self.image, self.rect)
+
+        # Arvuta toru otsa punkt
+        toruVektor = pygame.Vector2.from_polar((self.h / 2 + 9, -self.angle + 90))
+        indikaatori_pos = self.rectKeskpunkt + toruVektor
+
+        # Määra värv salve põhjal
+        varv = (0, 255, 0) if self.salv > 0 else (255, 0, 0)  # roheline kui on kuule, muidu punane
+
+        # Joonista väike ruut
+        pygame.draw.rect(ekraan, varv, pygame.Rect(indikaatori_pos[0] - 4, indikaatori_pos[1] - 4, 8, 8))

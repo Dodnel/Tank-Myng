@@ -40,10 +40,11 @@ class Liikumine:
             if "paremale" in vyyrtused:
                 keeramisSuund -= 1
 
-
             if "tulista" in vyyrtused:
                 if not self.tulistas[i]:
-                    kuulid.append(tank.tulista())
+                    uus_kuul = tank.tulista()
+                    if uus_kuul is not None:
+                        kuulid.append(uus_kuul)
                     self.tulistas[i] = True
             else:
                 self.tulistas[i] = False

@@ -86,13 +86,15 @@ class Myng:
                     self.kuulid.remove(kuul)
 
             for tank in self.tankid[:]:
+                tank.uuendaSalv()  # ← uuendab salve seisundit ajapõhiselt
+
                 if tank.alive():
                     tank.tangiCollisionSeinadCheck(self.seinad)
                     if tank.tankiKuuliCollision(self.kuulideGrupp):
                         tank.kill()
                         print("enne", self.liikumisProfiilid)
                         self.liikumine.kustutaTank(tank)
-                        print("pyrast", self.liikumisProfiilid)
+                        print("pärast", self.liikumisProfiilid)
 
 
             if len(self.tankid) <= 1:
@@ -102,10 +104,13 @@ class Myng:
             self.tankideGrupp.draw(self.ekraan)
             self.kuulideGrupp.draw(self.ekraan)
 
+            for tank in self.tankid:
+                tank.joonistaSalveIndikaator(self.ekraan)
+
             pygame.display.flip()
 
 
 
 if __name__ == '__main__':
-    myng = Myng(50,30, 40,[{"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"i": "edasi", "k": "tagasi", "j": "vasakule", "l": "paremale", "o": "tulista"}])
+    myng = Myng(12,6, 100,[{"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"i": "edasi", "k": "tagasi", "j": "vasakule", "l": "paremale", "o": "tulista"}])
     myng.run()
