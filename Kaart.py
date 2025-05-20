@@ -3,7 +3,7 @@ from random import randint
 import pygame, random
 #s
 class Kaart:
-    def __init__(self, resolutsioon="900x900",tileSuurus=50,customMap=""):
+    def __init__(self, resolutsioon="900x900",tileSuurus=100,customMap=""):
         self.resolutsioon = resolutsioon
         self.tileSuurus = tileSuurus
         self.kaardiLaius, self.kaardiKyrgus = self.teiseldaKaardiResolutsioon()
@@ -13,36 +13,56 @@ class Kaart:
             self.kaart = customMap
         self.spawnKaart = []
 
-
     def leiaTankideleTekkeKohad(self, tankidArv):
         self.spawnKaart = []
+
         self.voimalikudKohad = []
 
         for i in range(self.kaardiLaius):
             rida = []
             for j in range(self.kaardiKyrgus):
-                rida.append((i,j))
-                self.voimalikudKohad.append((i,j))
+                rida.append((i, j))
 
             self.spawnKaart.append(rida)
 
-        def looRistkylik(kaheMyytmelineJada,x0,y0,x1,y1):
-            for i in range(y0,y1):
-                for j in range(x0,x1):
+        def looRistkylik(kaheMyytmelineJada, x0, y0, x1, y1):
+            for i in range(y0, y1 + 1):
+                for j in range(x0, x1 + 1):
                     try:
-                        kaheMyytmelineJada[i][j] = "#"
+                        kaheMyytmelineJada[abs(j)][abs(i)] = "(#, #)"
+
                     except:
                         pass
 
             return kaheMyytmelineJada
 
-        for i in range(tankidArv, -1, -1):
-            tankiX, tankiY  = randint(0, self.kaardiLaius), randint(0, self.kaardiKyrgus)
+        blokk = self.spawnKaart
 
-            blokk = looRistkylik(self.spawnKaart, tankiX-i, tankiY-i, tankiX+i, tankiY+i)
+        for i in range(tankidArv):
 
+            jah = True
+            r = tankidArv
 
-        return blokk
+            while jah:
+
+                tankiX, tankiY = randint(0, self.kaardiLaius - 1), randint(0, self.kaardiKyrgus - 1)
+
+                for rida in blokk:
+                    if (tankiX, tankiY) in rida:
+
+                        self.voimalikudKohad.append((tankiX, tankiY))
+
+                        blokk = looRistkylik(blokk, tankiX - r, tankiY - r, tankiX + r, tankiY + r)
+
+                        jah = False
+
+                    else:
+
+                        if not r >= 0:
+                            r -= 1
+
+        print(str(blokk).replace("], [", "]\n ["))
+        return self.voimalikudKohad
 
 
 
@@ -182,6 +202,6 @@ class Kaart:
 
 
 if __name__ == "__main__":
-    kaart = Kaart(resolutsioon="1900x500")
+    kaart = Kaart(resolutsioon="1000x1000")
 
     print(kaart.leiaTankideleTekkeKohad(2))
