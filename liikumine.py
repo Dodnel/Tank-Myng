@@ -28,8 +28,6 @@ class Liikumine:
             liikumisSuund = 0
             keeramisSuund = 0
 
-            print(vyyrtused)
-
             if "edasi" in vyyrtused:
                 liikumisSuund += 1
 

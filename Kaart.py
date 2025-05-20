@@ -61,14 +61,7 @@ class Kaart:
                         if not r >= 0:
                             r -= 1
 
-        print(str(blokk).replace("], [", "]\n ["))
         return self.voimalikudKohad
-
-
-
-
-
-
 
 
     def teiseldaKaardiResolutsioon(self):
