@@ -4,10 +4,8 @@ from Kuul import Kuul
 from Tank import Tank
 from liikumine import Liikumine
 import sys
-
-from testMyng import laius, kyrgus
-
-
+import time
+import copy
 #s
 class Myng:
     def __init__(self, kaardiLaius, kaardiKyrgus, tileSuurus, tankideLiikumisProfiilid):
@@ -16,7 +14,8 @@ class Myng:
         self.kaart = Kaart(kaardiLaius, kaardiKyrgus, tileSuurus)
         self.resolutsioon = self.kaart.saaResolutsioon()
         self.laius, self.kyrgus = map(int, self.resolutsioon.split("x"))
-        self.ekraan = pygame.display.set_mode((laius, kyrgus))
+
+        self.ekraan = pygame.display.set_mode((kaardiLaius * tileSuurus, kaardiKyrgus * tileSuurus))
         self.liikumisProfiilid = tankideLiikumisProfiilid
         self.tileSuurus = tileSuurus
 
@@ -37,7 +36,7 @@ class Myng:
     def looTankid(self):
         tekkeKohad = self.kaart.leiaTankideleTekkeKohad(len(self.liikumisProfiilid))
         for koht in tekkeKohad:
-            uusTank = Tank(koht[0] + self.tileSuurus / 2, koht[1]+ self.tileSuurus / 2, 20, 30, (0, 0, 255))
+            uusTank = Tank(koht[0] * self.tileSuurus + self.tileSuurus / 2, koht[1] * self.tileSuurus + self.tileSuurus / 2, 20, 30, (0, 0, 255))
             self.tankid.append(uusTank)
             self.tankideGrupp.add(uusTank)
 
@@ -59,11 +58,18 @@ class Myng:
     def collisionCheck(self):
         pass
 
-    def run(self):
+    def restart(self):
+        self.tankid = []
+        self.kuulid = []
+        self.kuulideGrupp = pygame.sprite.Group()
+        self.tankideGrupp = pygame.sprite.Group()
         self.looKaart()
         self.looTankid()
-        self.liikumine = Liikumine(self.tankid, self.liikumisProfiilid)
-        self.kuulid = []
+        self.liikumine = Liikumine(self.tankid, copy.deepcopy(self.liikumisProfiilid))
+
+
+    def run(self):
+        self.restart()
 
         while True:
             self.clock.tick(60)
@@ -84,13 +90,22 @@ class Myng:
                     tank.tangiCollisionSeinadCheck(self.seinad)
                     if tank.tankiKuuliCollision(self.kuulideGrupp):
                         tank.kill()
+                        print("enne", self.liikumisProfiilid)
                         self.liikumine.kustutaTank(tank)
+                        print("pyrast", self.liikumisProfiilid)
+
+
+            if len(self.tankid) <= 1:
+                self.restart()
+
 
             self.tankideGrupp.draw(self.ekraan)
             self.kuulideGrupp.draw(self.ekraan)
 
             pygame.display.flip()
 
+
+
 if __name__ == '__main__':
-    myng = Myng("500x500",50, [{"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}])
+    myng = Myng(50,30, 40,[{"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"i": "edasi", "k": "tagasi", "j": "vasakule", "l": "paremale", "o": "tulista"}])
     myng.run()
