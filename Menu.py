@@ -3,15 +3,6 @@ import pygame
 from PIL import Image, ImageTk
 
 
-"""
-TODO TONY
-
-tanki arvu valimine ja sealt syltuvalt siis
-
-"""
-
-
-
 class Menyy:
     def __init__(self):
         pygame.init()
@@ -22,7 +13,7 @@ class Menyy:
         self.akna_suurus_x, self.akna_suurus_y = 640, 360
         self.aken.geometry(f"{self.akna_suurus_x}x{self.akna_suurus_y}")
         self.aken.resizable(False, False)
-        self.taustavarv = "#cacaca"
+        self.taustavarv = "#d18d3e"
         self.nupuvarv = "#d18d3e"
         self.aken.configure(background=self.taustavarv)
 
@@ -53,10 +44,20 @@ class Menyy:
         self.aken.destroy()
 
     def ava_satted(self):
+        if hasattr(self, 'satete_aken') and self.satete_aken.winfo_exists():
+            self.satete_aken.lift()
+            return
+
         self.satete_aken = tk.Toplevel(self.aken)
         self.satete_aken.title("Sätted")
-        self.satete_aken.geometry("400x300")
+        self.satete_aken.geometry("400x400")
         self.satete_aken.resizable(False, False)
+
+        def sulge_satted():
+            self.satete_aken.destroy()
+            self.satete_aken = None
+
+        self.satete_aken.protocol("WM_DELETE_WINDOW", sulge_satted)
 
         raam = tk.Frame(self.satete_aken)
         raam.pack(fill="both", expand=True)
@@ -79,22 +80,57 @@ class Menyy:
         sisu_raam.bind("<Configure>", uuenda_scrolli_suurus)
         tahvel.bind("<Configure>", uuenda_scrolli_suurus)
 
-        tk.Label(sisu_raam, text="Sätted", font=("Arial", 24)).pack(pady=20)
+        # Kerimine hiirerulliga
+        def kerimine(event):
+            tahvel.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
-        raam1 = tk.Frame(sisu_raam)
-        raam1.pack(pady=10)
-        tk.Label(raam1, text="Muutuja1", font=("Arial", 14)).pack(side="left", pady=10)
-        tk.Scale(raam1, from_=0, to=1, resolution=0.1, orient=tk.HORIZONTAL,variable=self.vaartus_m1).pack(side="right", pady=2)
+        tahvel.bind_all("<MouseWheel>", kerimine)
+        tahvel.bind_all("<Button-4>", lambda e: tahvel.yview_scroll(-1, "units"))
+        tahvel.bind_all("<Button-5>", lambda e: tahvel.yview_scroll(1, "units"))
 
-        raam2 = tk.Frame(sisu_raam)
-        raam2.pack(pady=10)
-        tk.Label(raam2, text="Muutuja2", font=("Arial", 14)).pack(side="left", pady=10)
-        tk.Scale(raam2, from_=0, to=1, resolution=0.1, orient=tk.HORIZONTAL, variable=self.vaartus_m2).pack(side="right",
-                                                                                                           pady=2)
-        raam3 = tk.Frame(sisu_raam)
-        raam3.pack(pady=10)
-        tk.Label(raam3, text="Muutuja3", font=("Arial", 14)).pack(side="left", pady=10)
-        tk.Scale(raam3, from_=0, to=1, resolution=0.1, orient=tk.HORIZONTAL, variable=self.vaartus_m3).pack(side="right", pady=2)
+        tk.Label(sisu_raam, text="Sätted", font=("Arial", 24)).pack(pady=10)
+
+        def lisa_slaider(vanem, nimi, min_v, max_v, muutuja):
+            raam = tk.Frame(vanem)
+            raam.pack(pady=5)
+            tk.Label(raam, text=nimi, width=20, anchor="w").pack(side="left")
+            tk.Scale(raam, from_=min_v, to=max_v, orient="horizontal", variable=muutuja).pack(side="right")
+
+        def lisa_tekstisisestus(vanem, nimi, muutuja):
+            raam = tk.Frame(vanem)
+            raam.pack(pady=5, fill="x", padx=10)
+            tk.Label(raam, text=nimi, anchor="w").pack(side="left")
+            sisestus = tk.Entry(raam, textvariable=muutuja, font=("Ariel", 12), width=15)
+            sisestus.pack(side="right", padx=5)
+
+        # Muutujad
+        # tile suurus default 100
+        # kaardi laius 12, kõrgus 6
+
+
+        self.ruuduSuurus = tk.IntVar(value=100)
+        self.kuuli_elu = tk.IntVar(value=5)
+        self.kuuli_kiirus = tk.IntVar(value=10)
+        self.kuuli_suurus = tk.IntVar(value=5)
+        self.tangi_kiirus = tk.IntVar(value=3)
+
+        lisa_tekstisisestus(sisu_raam, "Ruudu suurus", self.ruuduSuurus)
+        lisa_slaider(sisu_raam, "Kuuli eluaeg (sek)", 1, 10, self.kuuli_elu)
+        lisa_slaider(sisu_raam, "Kuuli kiirus", 1, 20, self.kuuli_kiirus)
+        lisa_slaider(sisu_raam, "Kuuli suurus", 1, 10, self.kuuli_suurus)
+        lisa_slaider(sisu_raam, "Tanki kiirus", 1, 10, self.tangi_kiirus)
+
+        # Powerupid
+        tk.Label(sisu_raam, text="Powerupid", font=("Arial", 16)).pack(pady=10)
+        self.powerup1 = tk.BooleanVar()
+        self.powerup2 = tk.BooleanVar()
+        self.powerup3 = tk.BooleanVar()
+        self.powerup4 = tk.BooleanVar()
+
+        tk.Checkbutton(sisu_raam, text="Powerup 1", variable=self.powerup1).pack()
+        tk.Checkbutton(sisu_raam, text="Powerup 2", variable=self.powerup2).pack()
+        tk.Checkbutton(sisu_raam, text="Powerup 3", variable=self.powerup3).pack()
+        tk.Checkbutton(sisu_raam, text="Powerup 4", variable=self.powerup4).pack()
 
         tk.Button(sisu_raam, text="Sulge", bg=self.nupuvarv, command=self.satete_aken.destroy, font=("Arial", 16)).pack(pady=20)
 
@@ -115,9 +151,9 @@ class Menyy:
         self.helipilt_silt.config(image=self.helipilt)
 
     def loo_vidinad(self):
-        tk.Label(self.aken, text="HÜPERTANKISÕDA", font=("Arial", 24)).pack(pady=80)
-        tk.Button(self.aken, text="START", font=("Arial", 16), bg=self.nupuvarv, command=self.stardi_myng, pady=10, padx=20).pack(pady=10)
-        tk.Button(self.aken, text="SÄTTED", font=("Arial", 16), bg=self.nupuvarv, command=self.ava_satted, pady=10, padx=20).pack(pady=10)
+        tk.Label(self.aken, text="HÜPERTANKISÕDA", font=("Arial", 24), bg=self.taustavarv).place(y=7, x=320)
+        tk.Button(self.aken, text="START", font=("Arial", 16), bg=self.nupuvarv, command=self.stardi_myng, padx=60).place(x=30, y=150)
+        tk.Button(self.aken, text="SÄTTED", font=("Arial", 16), bg=self.nupuvarv, command=self.ava_satted, padx=53).place(x=30, y=200)
 
         self.helipilt_silt.place(relx=0.95, rely=0.95, anchor="se")
 
