@@ -1,7 +1,7 @@
 from random import randint
 
 import pygame, random
-#s
+
 class Kaart:
     def __init__(self, kaardiLaius, kaardiKyrgus, tileSuurus=100, customMap=""):
         self.kaardiLaius = kaardiLaius
