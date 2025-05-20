@@ -4,13 +4,19 @@ from Kuul import Kuul
 from Tank import Tank
 from liikumine import Liikumine
 import sys
+
+from testMyng import laius, kyrgus
+
+
 #s
 class Myng:
-    def __init__(self,resolutsioon, tileSuurus, tankideLiikumisProfiilid):
+    def __init__(self, kaardiLaius, kaardiKyrgus, tileSuurus, tankideLiikumisProfiilid):
         pygame.init()
-        self.ekraan = pygame.display.set_mode((800, 600))
         self.clock = pygame.time.Clock()
-        self.kaart = Kaart(resolutsioon, tileSuurus)
+        self.kaart = Kaart(kaardiLaius, kaardiKyrgus, tileSuurus)
+        self.resolutsioon = self.kaart.saaResolutsioon()
+        self.laius, self.kyrgus = map(int, self.resolutsioon.split("x"))
+        self.ekraan = pygame.display.set_mode((laius, kyrgus))
         self.liikumisProfiilid = tankideLiikumisProfiilid
         self.seinad = []
 
