@@ -3,10 +3,11 @@ from random import randint
 import pygame, random
 #s
 class Kaart:
-    def __init__(self, resolutsioon="900x900",tileSuurus=100,customMap=""):
-        self.resolutsioon = resolutsioon
+    def __init__(self, kaardiLaius, kaardiKyrgus, tileSuurus=100, customMap=""):
+        self.kaardiLaius = kaardiLaius
+        self.kaardiKyrgus = kaardiKyrgus
         self.tileSuurus = tileSuurus
-        self.kaardiLaius, self.kaardiKyrgus = self.teiseldaKaardiResolutsioon()
+
         if customMap == "":
             self.kaart = self.genereeriKaart()
         else:
@@ -66,18 +67,10 @@ class Kaart:
 
 
 
+    def saaResolutsioon(self):
+        res = f"{self.tileSuurus*self.kaardiLaius}x{self.tileSuurus*self.kaardiKyrgus}"
+        return res
 
-
-
-
-
-    def teiseldaKaardiResolutsioon(self):
-        ekraaniX,ekraaniY = map(int,self.resolutsioon.split("x"))
-
-        kaardiLaius = ekraaniX // self.tileSuurus
-        kaardiKyrgus = ekraaniY // self.tileSuurus
-
-        return kaardiLaius, kaardiKyrgus
 
     def drawMap(self):
         """
@@ -202,6 +195,6 @@ class Kaart:
 
 
 if __name__ == "__main__":
-    kaart = Kaart(resolutsioon="1000x1000")
+    kaart = Kaart(kaardiLaius=10, kaardiKyrgus=10)
 
     print(kaart.leiaTankideleTekkeKohad(2))

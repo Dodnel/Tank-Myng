@@ -5,15 +5,17 @@ from Kaart import Kaart
 
 from Tank import Tank
 from liikumine import Liikumine
-resolutsioon = "1900x800"
+
+
+kaart = Kaart(kaardiLaius=10, kaardiKyrgus=6 ,tileSuurus=100)
+
+resolutsioon = kaart.saaResolutsioon()
 
 laius, kyrgus = map(int,resolutsioon.split("x"))
 
 pygame.init()
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((laius,kyrgus))
-
-kaart = Kaart(resolutsioon=resolutsioon,tileSuurus=50)
 #kuul = Kuul()
 tank = Tank(25, 25, 20, 30, (128, 0, 255))
 
