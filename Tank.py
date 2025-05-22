@@ -9,13 +9,22 @@ from Kuul import Kuul
 
 #see on varastatud, ma vist teen yppimise pyhimyttel ise mingi hetk
 class Tank(pygame.sprite.Sprite):
-    def __init__(self, x, y, w, h, vyrv):
+    def __init__(self, x, y, w, h, vyrv, salveMaht=5):
         pygame.sprite.Sprite.__init__(self)
         self.angle = 0
-        self.original_image = pygame.Surface([w, h], pygame.SRCALPHA)
-        self.original_image.fill(vyrv)
+        #self.original_image = pygame.Surface([w, h], pygame.SRCALPHA)
 
-        #self.original_image = pygame.image.load("sprite/pixil-frame-0.png")
+        vyrvid = {"sinine": "Sprites/sinine.png",
+                  "roheline": "Sprites/roheline.png",
+                  "punane": "Sprites/punane.png",
+                  "kollane": "Sprites/kollane.png"}
+
+        if vyrv in vyrvid:
+            vyrv = vyrvid[vyrv.lower()]
+        else:
+            vyrv = "Sprites/default.png"
+
+        self.original_image = pygame.image.load(vyrv)
 
         self.image = self.original_image
 
@@ -25,7 +34,7 @@ class Tank(pygame.sprite.Sprite):
         self.h = h
         self.kiirus = 3
 
-        self.salve_maht = 5
+        self.salve_maht = salveMaht
         self.salv = self.salve_maht
         self.laadib = False
         self.laadimise_algus = None
