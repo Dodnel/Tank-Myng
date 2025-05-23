@@ -8,13 +8,15 @@ import time
 import copy
 #s
 class Myng:
-    def __init__(self, kaardiLaius, kaardiKyrgus, tileSuurus, tankideLiikumisProfiilid):
+    def __init__(self, kaardiLaius, kaardiKyrgus, tileSuurus, tankideLiikumisProfiilid, taustaVyrv=(255,255,255), taustaPilt=None):
         pygame.init()
 
         self.clock = pygame.time.Clock()
         self.kaart = Kaart(kaardiLaius, kaardiKyrgus, tileSuurus)
         self.resolutsioon = self.kaart.saaResolutsioon()
         self.laius, self.kyrgus = map(int, self.resolutsioon.split("x"))
+        self.taustaVyrv = taustaVyrv
+        self.taustaPilt = taustaPilt
 
         self.ekraan = pygame.display.set_mode((kaardiLaius * tileSuurus, kaardiKyrgus * tileSuurus))
         self.liikumisProfiilid = tankideLiikumisProfiilid
@@ -80,7 +82,11 @@ class Myng:
             self.clock.tick(60)
             self.events()
 
-            self.ekraan.fill((255, 255, 255))
+            if not self.taustaPilt:
+                self.ekraan.fill(self.taustaVyrv)
+            else:
+                pass
+
             for sein in self.seinad:
                 pygame.draw.rect(self.ekraan, "black", sein)
 
@@ -115,7 +121,9 @@ class Myng:
 
                 tank.joonistaPauk(self.ekraan)
 
-            # Salve indikaatorid
+            self.kuulideGrupp.draw(self.ekraan)
+            self.tankideGrupp.draw(self.ekraan)
+
             for tank in self.tankid:
                 tank.joonistaSalveIndikaator(self.ekraan)
 

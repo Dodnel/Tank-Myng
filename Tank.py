@@ -168,9 +168,7 @@ class Tank(pygame.sprite.Sprite):
         for i in kuuliGrupp:
             if pygame.sprite.collide_mask(self,i):
                 i.kill()
-
                 self.plahvatusHeli.play()
-
                 return True
 
     def saaKiirus(self):
@@ -182,7 +180,6 @@ class Tank(pygame.sprite.Sprite):
         toruVektor = pygame.Vector2.from_polar((self.h / 2 + 9, -self.angle + 90))
         indikaatori_pos = self.rectKeskpunkt + toruVektor
 
-        # Määra värv salve põhjal
         varv = (0, 255, 0) if self.salv > 0 else (255, 0, 0)  # roheline kui on kuule, muidu punane
 
         # Joonista väike ruut
