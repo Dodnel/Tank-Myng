@@ -41,6 +41,8 @@ class Tank(pygame.sprite.Sprite):
         self.laadimise_algus = None
         self.laadimise_kestus = 5000
 
+        self.tulistamisHeli = pygame.mixer.Sound("audio/tulistamine.mp3")
+        self.plahvatusHeli = pygame.mixer.Sound("audio/plahvatus.mp3")
 
         self.plahvatus_kaadrid = []
         self.plahvatus_aktiivne = False
@@ -192,8 +194,6 @@ class Tank(pygame.sprite.Sprite):
         self.plahvatus_timer = pygame.time.get_ticks()
 
     def joonistaPauk(self, ekraan):
-
-        # Kui plahvatus on aktiivne, joonista selle kaader
         if self.plahvatus_aktiivne:
             aeg = pygame.time.get_ticks()
             if aeg - self.plahvatus_timer > 50:
@@ -205,6 +205,5 @@ class Tank(pygame.sprite.Sprite):
                 rect = kaader.get_rect(center=self.rect.center)
                 ekraan.blit(kaader, rect)
             else:
-                # Kui kõik kaadrid on läbi, märgi tank eemaldatavaks
                 self.plahvatus_aktiivne = False
                 self.plahvatus_valmis = True

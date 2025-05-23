@@ -47,9 +47,6 @@ class Myng:
             self.tankid.append(uusTank)
             self.tankideGrupp.add(uusTank)
 
-    def nullindaSkoor(self):
-        pass
-
     def events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -61,9 +58,6 @@ class Myng:
         for kuul in uuedKuulid:
             self.kuulid.append(kuul)
             self.kuulideGrupp.add(kuul)
-
-    def collisionCheck(self):
-        pass
 
     def restart(self):
         self.tankid = []
@@ -118,11 +112,7 @@ class Myng:
                 if tank.plahvatus_valmis:
                     tank.kill()
                     self.liikumine.kustutaTank(tank)
-
                 tank.joonistaPauk(self.ekraan)
-
-            self.kuulideGrupp.draw(self.ekraan)
-            self.tankideGrupp.draw(self.ekraan)
 
             for tank in self.tankid:
                 tank.joonistaSalveIndikaator(self.ekraan)
