@@ -35,11 +35,11 @@ class Tank(pygame.sprite.Sprite):
         self.h = h
         self.kiirus = 3
 
-        self.salve_maht = salveMaht
+        self.salve_maht = 1
         self.salv = self.salve_maht
         self.laadib = False
         self.laadimise_algus = None
-        self.laadimise_kestus = 5000
+        self.laadimise_kestus = 2000
 
         self.tulistamisHeli = pygame.mixer.Sound("audio/tulistamine.mp3")
         self.plahvatusHeli = pygame.mixer.Sound("audio/plahvatus.mp3")
