@@ -10,6 +10,7 @@ import copy
 class Myng:
     def __init__(self, kaardiLaius, kaardiKyrgus, tileSuurus, tankideLiikumisProfiilid, taustaVyrv=(255,255,255), taustaPilt=None):
         pygame.init()
+        pygame.mixer.init()
 
         self.clock = pygame.time.Clock()
         self.kaart = Kaart(kaardiLaius, kaardiKyrgus, tileSuurus)
@@ -17,6 +18,12 @@ class Myng:
         self.laius, self.kyrgus = map(int, self.resolutsioon.split("x"))
         self.taustaVyrv = taustaVyrv
         self.taustaPilt = taustaPilt
+        self.taustaMuusika = pygame.mixer.music.load(filename="audio/Battle_Symphony.mp3")
+        self.muusikaVolyym = 0.2
+        pygame.mixer.music.set_volume(self.muusikaVolyym)
+        print(pygame.mixer.music.get_volume())
+        pygame.mixer.music.play()
+
 
         self.ekraan = pygame.display.set_mode((kaardiLaius * tileSuurus, kaardiKyrgus * tileSuurus))
         self.liikumisProfiilid = tankideLiikumisProfiilid
