@@ -8,17 +8,16 @@ import time
 import copy
 #s
 class Myng:
-    def __init__(self, kaardiLaius, kaardiKyrgus, tileSuurus, tankideLiikumisProfiilid, taustaVyrv=(255,255,255), taustaPilt=None):
+    def __init__(self, kaardiLaius, kaardiKyrgus, tileSuurus, tankideLiikumisProfiilid, taustaVyrv=(255,255,255)):
         pygame.init()
 
         self.clock = pygame.time.Clock()
         self.kaart = Kaart(kaardiLaius, kaardiKyrgus, tileSuurus)
         self.resolutsioon = self.kaart.saaResolutsioon()
-        self.laius, self.kyrgus = map(int, self.resolutsioon.split("x"))
+        self.laiusPikslites, self.kyrgusPikslites = map(int, self.resolutsioon.split("x"))
         self.taustaVyrv = taustaVyrv
-        self.taustaPilt = taustaPilt
 
-        self.ekraan = pygame.display.set_mode((kaardiLaius * tileSuurus, kaardiKyrgus * tileSuurus))
+        self.ekraan = pygame.display.set_mode((kaardiLaius * tileSuurus, kaardiKyrgus * tileSuurus + 150))
         self.liikumisProfiilid = tankideLiikumisProfiilid
         self.tileSuurus = tileSuurus
 
@@ -29,6 +28,9 @@ class Myng:
         self.tankid = []
         self.liikumine = None
         self.kuulid = []
+        self.skoor = [0] * len(tankideLiikumisProfiilid)
+
+        self.font = pygame.font.SysFont(None, 48)
 
         ikoon = pygame.image.load("pildid/pixil-frame-0.png")
         pygame.display.set_icon(ikoon)
@@ -41,9 +43,14 @@ class Myng:
 
     def looTankid(self):
         tekkeKohad = self.kaart.leiaTankideleTekkeKohad(len(self.liikumisProfiilid))
-        for koht, vyrv in zip(tekkeKohad, ["roheline","sinine","punane","kollane"]):
 
-            uusTank = Tank(koht[0] * self.tileSuurus + self.tileSuurus / 2, koht[1] * self.tileSuurus + self.tileSuurus / 2, 20, 30, vyrv)
+        for i, (koht, vyrv) in enumerate(zip(tekkeKohad, ["roheline", "sinine", "punane", "kollane"])):
+            uusTank = Tank(koht[0] * self.tileSuurus + self.tileSuurus / 2,
+                           koht[1] * self.tileSuurus + self.tileSuurus / 2,
+                           20, 30, vyrv)
+
+            uusTank.skooriIndeks = i
+
             self.tankid.append(uusTank)
             self.tankideGrupp.add(uusTank)
 
@@ -71,15 +78,20 @@ class Myng:
     def run(self):
         self.restart()
 
+        yksVieendikLaiusest = self.laiusPikslites / 5
+
+
+
+        taustaPilt = pygame.image.load("pildid/taustaPilt.jpg").convert()
+        taustaPilt = pygame.transform.scale(taustaPilt, (self.laiusPikslites,self.kyrgusPikslites))
 
         while True:
+
             self.clock.tick(60)
             self.events()
 
-            if not self.taustaPilt:
-                self.ekraan.fill(self.taustaVyrv)
-            else:
-                pass
+            self.ekraan.fill("White")
+            self.ekraan.blit(taustaPilt,(0,0))
 
             for sein in self.seinad:
                 pygame.draw.rect(self.ekraan, "black", sein)
@@ -90,8 +102,12 @@ class Myng:
                 else:
                     self.kuulid.remove(kuul)
 
-            # ↪ Kui ainult 1 tank jääb järele, restartime
-            if len(self.tankid) <= 1:
+            if len(self.tankid) == 1:
+                ellujyynu = self.tankid[0]
+                self.skoor[ellujyynu.skooriIndeks] += 1
+                self.restart()
+
+            elif len(self.tankid) == 0:
                 self.restart()
 
 
@@ -116,6 +132,19 @@ class Myng:
 
             for tank in self.tankid:
                 tank.joonistaSalveIndikaator(self.ekraan)
+
+            for skoor, pilt, offset in zip(self.skoor, ["rohelineSkoor", "sinineSkoor", "punaneSkoor", "kollaneSkoor"],
+                                           range(1, 5)):
+                skooriPilt = pygame.image.load(f"pildid/{pilt}.png")
+                skooriPilt = pygame.transform.scale(skooriPilt, (75, 75))
+
+                xPos = yksVieendikLaiusest * offset - yksVieendikLaiusest * 0.6
+                yPos = self.kyrgusPikslites + 50
+
+                self.ekraan.blit(skooriPilt, (xPos, yPos))
+
+                skooriTekst = self.font.render(str(skoor), True, (0, 0, 0))
+                self.ekraan.blit(skooriTekst, (xPos + 100, yPos + 20))
 
             pygame.display.flip()
 
