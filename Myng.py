@@ -10,27 +10,35 @@ import copy
 class Myng:
     def __init__(self, mangu_muusika_voluum: float=0.7, kaardiLaius=12,
                  kaardiKyrgus=6, tileSuurus=100,
-                 tankideLiikumisProfiilid=[
-                    {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"},
-                    {"i": "edasi", "k": "tagasi", "j": "vasakule", "l": "paremale", "o": "tulista"}],
-                 kuuli_kiirus=5, voimendus1: bool=False, voimendus2: bool=False, voimendus3: bool=False):
+                 tankideLiikumisProfiilid = None,
+                 kuuliKiirus=5, voimendus1: bool=False, voimendus2: bool=False, voimendus3: bool=False):
         pygame.init()
         pygame.mixer.init()
 
+        if tankideLiikumisProfiilid == None:
+            self.liikumisProfiilid = [{"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale", "f": "tulista"},
+                                      {"i": "edasi", "k": "tagasi", "j": "vasakule", "l": "paremale", "o": "tulista"}]
+        else:
+            self.liikumisProfiilid = tankideLiikumisProfiilid
+
         self.clock = pygame.time.Clock()
         self.kaart = Kaart(kaardiLaius, kaardiKyrgus, tileSuurus)
+        self.tileSuurus = tileSuurus
         self.resolutsioon = self.kaart.saaResolutsioon()
-        self.laius, self.kyrgus = map(int, self.resolutsioon.split("x"))
+        self.laiusPikslites, self.kyrgusPikslites = map(int, self.resolutsioon.split("x"))
+
+
         self.taustaMuusika = pygame.mixer.music.load(filename="audio/Battle_Symphony.mp3")
         self.muusikaVolyym = mangu_muusika_voluum
+
         pygame.mixer.music.set_volume(self.muusikaVolyym)
         print(pygame.mixer.music.get_volume())
         pygame.mixer.music.play()
 
 
-        self.ekraan = pygame.display.set_mode((kaardiLaius * tileSuurus, kaardiKyrgus * tileSuurus + 150))
-        self.liikumisProfiilid = tankideLiikumisProfiilid
-        self.tileSuurus = tileSuurus
+        self.ekraan = pygame.display.set_mode((self.laiusPikslites, self.kyrgusPikslites + 150))
+
+
 
         self.kuulideGrupp = pygame.sprite.Group()
         self.tankideGrupp = pygame.sprite.Group()
@@ -56,9 +64,9 @@ class Myng:
         tekkeKohad = self.kaart.leiaTankideleTekkeKohad(len(self.liikumisProfiilid))
 
         for i, (koht, vyrv) in enumerate(zip(tekkeKohad, ["roheline", "sinine", "punane", "kollane"])):
-            uusTank = Tank(koht[0] * self.tileSuurus + self.tileSuurus / 2,
-                           koht[1] * self.tileSuurus + self.tileSuurus / 2,
-                           20, 30, vyrv)
+            uusTank = Tank(x=koht[0] * self.tileSuurus + self.tileSuurus / 2,
+                           y=koht[1] * self.tileSuurus + self.tileSuurus / 2,
+                            kuuliKiirus=5, vyrv=vyrv)
 
             uusTank.skooriIndeks = i
 
@@ -161,6 +169,6 @@ class Myng:
 
 
 if __name__ == '__main__':
-    myng = Myng(12,6, 100,[{"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"},
+    myng = Myng(kaardiLaius=12,kaardiKyrgus=6, tileSuurus=100,tankideLiikumisProfiilid=[{"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"},
                            {"i": "edasi", "k": "tagasi", "j": "vasakule", "l": "paremale", "o": "tulista"}])
     myng.run()
