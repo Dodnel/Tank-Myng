@@ -8,7 +8,12 @@ import time
 import copy
 #s
 class Myng:
-    def __init__(self, tankideLiikumisProfiilid, mangu_muusika_voluum: float=0.7, kaardiLaius=12, kaardiKyrgus=6, tileSuurus=100):
+    def __init__(self, mangu_muusika_voluum: float=0.7, kaardiLaius=12,
+                 kaardiKyrgus=6, tileSuurus=100,
+                 tankideLiikumisProfiilid=[
+                    {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"},
+                    {"i": "edasi", "k": "tagasi", "j": "vasakule", "l": "paremale", "o": "tulista"}],
+                 kuuli_kiirus=5, voimendus1: bool=False, voimendus2: bool=False, voimendus3: bool=False):
         pygame.init()
         pygame.mixer.init()
 
@@ -48,7 +53,7 @@ class Myng:
         tekkeKohad = self.kaart.leiaTankideleTekkeKohad(len(self.liikumisProfiilid))
         for koht, vyrv in zip(tekkeKohad, ["roheline","sinine","punane","kollane"]):
 
-            uusTank = Tank(koht[0] * self.tileSuurus + self.tileSuurus / 2, koht[1] * self.tileSuurus + self.tileSuurus / 2, 20,)
+            uusTank = Tank(koht[0] * self.tileSuurus + self.tileSuurus / 2, koht[1] * self.tileSuurus + self.tileSuurus / 2, 20, 30, vyrv)
             self.tankid.append(uusTank)
             self.tankideGrupp.add(uusTank)
 

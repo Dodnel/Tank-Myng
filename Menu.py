@@ -8,7 +8,7 @@ class Menyy:
         pygame.init()
         pygame.mixer.init()
 
-        self.seaded = []
+        self.seaded = [5, 5, 5, 5]
 
         self.aken = tk.Tk()
         self.aken.title("HÜPERTANKISÕDA - Tony Tuisk, Karl Priido Hoogand, Ander Konsap")
@@ -97,10 +97,6 @@ class Menyy:
             tk.Label(raam, text=nimi, anchor="w").pack(side="left")
             sisestus = tk.Entry(raam, textvariable=muutuja, font=("Ariel", 12), width=15)
             sisestus.pack(side="right", padx=5)
-
-        # Muutujad
-        # tile suurus default 100
-        # kaardi laius 12, kõrgus 6
 
 
         self.ruuduSuurus = tk.IntVar(value=100)
