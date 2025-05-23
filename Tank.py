@@ -10,7 +10,7 @@ from PIL import Image
 
 #see on varastatud, ma vist teen yppimise pyhimyttel ise mingi hetk
 class Tank(pygame.sprite.Sprite):
-    def __init__(self, x, y, vyrv, kuuliKiirus=5, voimendus1: bool=False, voimendus2: bool=False, voimendus3: bool=False):
+    def __init__(self, x, y, vyrv, kuuliKiirus=5, heliEfektiValjusus: float=0.2, voimendus1: bool=False, voimendus2: bool=False, voimendus3: bool=False):
         pygame.sprite.Sprite.__init__(self)
         self.angle = 0
         #self.original_image = pygame.Surface([w, h], pygame.SRCALPHA)
@@ -28,6 +28,8 @@ class Tank(pygame.sprite.Sprite):
         self.original_image = pygame.image.load(vyrv)
 
         self.image = self.original_image
+
+
 
         self.rectKeskpunkt = (x,y)
         self.rect = self.image.get_rect(center=self.rectKeskpunkt)
@@ -48,6 +50,12 @@ class Tank(pygame.sprite.Sprite):
 
         self.tulistamisHeli = pygame.mixer.Sound("audio/tulistamine.mp3")
         self.plahvatusHeli = pygame.mixer.Sound("audio/plahvatus.mp3")
+
+        self.tulistamisHeli.set_volume(heliEfektiValjusus)
+        self.plahvatusHeli.set_volume(heliEfektiValjusus)
+
+
+
 
         self.plahvatus_kaadrid = []
         self.plahvatus_aktiivne = False

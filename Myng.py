@@ -8,10 +8,10 @@ import time
 import copy
 #s
 class Myng:
-    def __init__(self, mangu_muusika_voluum: float=0.7, kaardiLaius=12,
+    def __init__(self, mangu_muusika_voluum: float=0.2, kaardiLaius=12,
                  kaardiKyrgus=6, tileSuurus=100,
                  tankideLiikumisProfiilid = None,
-                 kuuliKiirus=5, voimendus1: bool=False, voimendus2: bool=False, voimendus3: bool=False):
+                 kuuliKiirus=5, voimendus1: bool=False, voimendus2: bool=False, voimendus3: bool=False, heliEfektiValjusus=0.2):
         pygame.init()
         pygame.mixer.init()
 
@@ -27,6 +27,7 @@ class Myng:
         self.resolutsioon = self.kaart.saaResolutsioon()
         self.laiusPikslites, self.kyrgusPikslites = map(int, self.resolutsioon.split("x"))
 
+        self.heliEfektiValjusus = heliEfektiValjusus
 
         self.taustaMuusika = pygame.mixer.music.load(filename="audio/Battle_Symphony.mp3")
         self.muusikaVolyym = mangu_muusika_voluum
@@ -66,7 +67,7 @@ class Myng:
         for i, (koht, vyrv) in enumerate(zip(tekkeKohad, ["roheline", "sinine", "punane", "kollane"])):
             uusTank = Tank(x=koht[0] * self.tileSuurus + self.tileSuurus / 2,
                            y=koht[1] * self.tileSuurus + self.tileSuurus / 2,
-                            kuuliKiirus=5, vyrv=vyrv)
+                            kuuliKiirus=5, vyrv=vyrv,heliEfektiValjusus=self.heliEfektiValjusus)
 
             uusTank.skooriIndeks = i
 
@@ -170,5 +171,5 @@ class Myng:
 
 if __name__ == '__main__':
     myng = Myng(kaardiLaius=12,kaardiKyrgus=6, tileSuurus=100,tankideLiikumisProfiilid=[{"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"},
-                           {"i": "edasi", "k": "tagasi", "j": "vasakule", "l": "paremale", "o": "tulista"}])
+                           {"i": "edasi", "k": "tagasi", "j": "vasakule", "l": "paremale", "o": "tulista"}],heliEfektiValjusus=0.2)
     myng.run()
