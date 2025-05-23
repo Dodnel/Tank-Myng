@@ -17,11 +17,15 @@ class Liikumine:
         self.tankid = tankid
         self.liikumisProfiilid = liikumisProfiilid
         self.tulistas =  [False] * len(tankid)
+        self.liikumisBlokk = []
 
     def teeLiigutus(self,nupuVajutused, seinad):
         nupuVajutused = set(nupuVajutused)
         kuulid = []
         for tank,liikumisProfiil,i in zip(self.tankid,self.liikumisProfiilid,range(len(self.tankid))):
+            if tank in self.liikumisBlokk:
+                continue
+
             yhtsedVyyrtused = liikumisProfiil.keys() & nupuVajutused #tuleb välja et dict_keys töötab nagu set, crazy
 
             vyyrtused = [liikumisProfiil[vyyrtus] for vyyrtus in list(yhtsedVyyrtused)]
@@ -53,6 +57,9 @@ class Liikumine:
             tank.keera(keeramisSuund, seinad)
 
         return kuulid
+
+    def blokeeriLiikumist(self, tank):
+        self.liikumisBlokk.append(tank)
 
     def kustutaTank(self, tank):
         kustutamisIndex = self.tankid.index(tank)

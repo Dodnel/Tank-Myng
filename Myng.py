@@ -39,7 +39,6 @@ class Myng:
         self.kaart.randomizedKruskalAlgoritm()
         self.seinad = self.kaart.drawMap()
 
-
     def looTankid(self):
         tekkeKohad = self.kaart.leiaTankideleTekkeKohad(len(self.liikumisProfiilid))
         for koht, vyrv in zip(tekkeKohad, ["roheline","sinine","punane","kollane"]):
@@ -47,7 +46,6 @@ class Myng:
             uusTank = Tank(koht[0] * self.tileSuurus + self.tileSuurus / 2, koht[1] * self.tileSuurus + self.tileSuurus / 2, 20, 30, vyrv)
             self.tankid.append(uusTank)
             self.tankideGrupp.add(uusTank)
-
 
     def nullindaSkoor(self):
         pass
@@ -58,7 +56,8 @@ class Myng:
                 sys.exit()
 
         vajutused = pygame.key.get_pressed()
-        uuedKuulid = self.liikumine.teeLiigutus([pygame.key.name(k) for k in range(len(vajutused)) if vajutused[k]], self.seinad)
+        nupud = [pygame.key.name(k) for k in range(len(vajutused)) if vajutused[k]]
+        uuedKuulid = self.liikumine.teeLiigutus(nupud, self.seinad)
         for kuul in uuedKuulid:
             self.kuulid.append(kuul)
             self.kuulideGrupp.add(kuul)
@@ -74,7 +73,6 @@ class Myng:
         self.looKaart()
         self.looTankid()
         self.liikumine = Liikumine(self.tankid, copy.deepcopy(self.liikumisProfiilid))
-
 
     def run(self):
         self.restart()
@@ -98,18 +96,30 @@ class Myng:
                 else:
                     self.kuulid.remove(kuul)
 
+            # ↪ Kui ainult 1 tank jääb järele, restartime
+            if len(self.tankid) <= 1:
+                self.restart()
+
+
+            # Kuulid joonistame sprite-grupiga
+            self.kuulideGrupp.draw(self.ekraan)
+            self.tankideGrupp.draw(self.ekraan)
+
             for tank in self.tankid[:]:
                 tank.uuendaSalv()
 
                 if tank.alive():
                     tank.tangiCollisionSeinadCheck(self.seinad)
                     if tank.tankiKuuliCollision(self.kuulideGrupp):
-                        tank.kill()
-                        self.liikumine.kustutaTank(tank)
+                        if not tank.plahvatus_aktiivne:
+                            self.liikumine.blokeeriLiikumist(tank)
+                            tank.alustaPlahvatus()
 
+                if tank.plahvatus_valmis:
+                    tank.kill()
+                    self.liikumine.kustutaTank(tank)
 
-            if len(self.tankid) <= 1:
-                self.restart()
+                tank.joonistaPauk(self.ekraan)
 
             self.kuulideGrupp.draw(self.ekraan)
             self.tankideGrupp.draw(self.ekraan)
@@ -118,7 +128,6 @@ class Myng:
                 tank.joonistaSalveIndikaator(self.ekraan)
 
             pygame.display.flip()
-
 
 
 if __name__ == '__main__':
