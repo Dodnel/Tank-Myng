@@ -8,7 +8,7 @@ import time
 import copy
 #s
 class Myng:
-    def __init__(self, kaardiLaius, kaardiKyrgus, tileSuurus, tankideLiikumisProfiilid, taustaVyrv=(255,255,255), taustaPilt=None):
+    def __init__(self, mangu_muusika_voluum: float=0.7, kaardiLaius=12, kaardiKyrgus=6, tileSuurus=100, tankideLiikumisProfiilid=[{"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"i": "edasi", "k": "tagasi", "j": "vasakule", "l": "paremale", "o": "tulista"}]):
         pygame.init()
 
         self.clock = pygame.time.Clock()
