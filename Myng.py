@@ -30,6 +30,7 @@ class Myng:
 
         ikoon = pygame.image.load("pildid/pixil-frame-0.png")
         pygame.display.set_icon(ikoon)
+        pygame.display.set_caption("Tanki myng")
 
     def looKaart(self):
         self.kaart.lammutaKaart()

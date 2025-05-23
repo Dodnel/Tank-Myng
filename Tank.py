@@ -40,6 +40,10 @@ class Tank(pygame.sprite.Sprite):
         self.laadimise_algus = None
         self.laadimise_kestus = 5000
 
+
+        self.tulistamisHeli = pygame.mixer.Sound()
+        self.plahvatusHeli = pygame.mixer.Sound()
+
     def keera(self, suund,seinad):
         if suund == 0:
             return
@@ -96,6 +100,9 @@ class Tank(pygame.sprite.Sprite):
                 self.laadimise_algus = pygame.time.get_ticks()
             toruVektor = pygame.Vector2.from_polar((self.h / 2 + 9, -self.angle + 90))
             kuuliPunkt = self.rectKeskpunkt + toruVektor
+
+            self.tulistamisHeli.play()
+
             return Kuul(-self.angle + 90, 5, kuuliPunkt[0], kuuliPunkt[1],
                         powerupCosinus=False, powerupLaser=False,
                         powerupKiirus=False, powerupSuurus=False)
@@ -144,6 +151,9 @@ class Tank(pygame.sprite.Sprite):
         for i in kuuliGrupp:
             if pygame.sprite.collide_mask(self,i):
                 i.kill()
+
+                self.plahvatusHeli.play()
+
                 return True
 
     def saaKiirus(self):
