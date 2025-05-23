@@ -10,7 +10,7 @@ from PIL import Image
 
 #see on varastatud, ma vist teen yppimise pyhimyttel ise mingi hetk
 class Tank(pygame.sprite.Sprite):
-    def __init__(self, x, y, w, h, vyrv, salveMaht=5, kuuli_kiirus=5, tanki_kiirus=3, voimendus1: bool=False, voimendus2: bool=False, voimendus3: bool=False):
+    def __init__(self, x, y, h, vyrv, kuuli_kiirus=5, voimendus1: bool=False, voimendus2: bool=False, voimendus3: bool=False):
         pygame.sprite.Sprite.__init__(self)
         self.angle = 0
         #self.original_image = pygame.Surface([w, h], pygame.SRCALPHA)
@@ -33,13 +33,17 @@ class Tank(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=self.rectKeskpunkt)
         self.mask = pygame.mask.from_surface(self.image)
         self.h = h
-        self.kiirus = 3
+        self.kiirus = kuuli_kiirus
 
         self.salve_maht = 1
         self.salv = self.salve_maht
         self.laadib = False
         self.laadimise_algus = None
         self.laadimise_kestus = 2000
+
+        self.voimendus1 = voimendus1
+        self.voimendus2 = voimendus2
+        self.voimendus3 = voimendus3
 
         self.tulistamisHeli = pygame.mixer.Sound("audio/tulistamine.mp3")
         self.plahvatusHeli = pygame.mixer.Sound("audio/plahvatus.mp3")
@@ -123,8 +127,7 @@ class Tank(pygame.sprite.Sprite):
             self.tulistamisHeli.play()
 
             return Kuul(-self.angle + 90, 5, kuuliPunkt[0], kuuliPunkt[1],
-                        powerupCosinus=False, powerupLaser=False,
-                        powerupKiirus=False, powerupSuurus=False)
+                        powerupCosinus=self.voimendus3, powerupKiirus=self.voimendus1, powerupSuurus=self.voimendus2)
         return None
 
     def uuendaSalv(self):
