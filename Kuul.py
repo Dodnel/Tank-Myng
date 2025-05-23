@@ -1,7 +1,7 @@
 import pygame, math
 
 class Kuul(pygame.sprite.Sprite):
-    def __init__(self, suund, kiirus, x, y, powerupSuurus = False, powerupKiirus = False, powerupCosinus = False, powerupLaser = False):
+    def __init__(self, suund, kiirus: int, x, y, powerupSuurus = False, powerupKiirus = False, powerupCosinus = False, powerupLaser= False):
         pygame.sprite.Sprite.__init__(self)
         self.x = x
         self.y = y

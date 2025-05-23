@@ -10,7 +10,7 @@ from PIL import Image
 
 #see on varastatud, ma vist teen yppimise pyhimyttel ise mingi hetk
 class Tank(pygame.sprite.Sprite):
-    def __init__(self, x, y, w, h, vyrv, salveMaht=5, kuuli_kiirus=5, voimendus1: bool=False, voimendus2: bool=False, voimendus3: bool=False):
+    def __init__(self, x, y, vyrv, kuuliKiirus=5, heliEfektiValjusus: float=0.2, voimendus1: bool=False, voimendus2: bool=False, voimendus3: bool=False):
         pygame.sprite.Sprite.__init__(self)
         self.angle = 0
         #self.original_image = pygame.Surface([w, h], pygame.SRCALPHA)
@@ -29,11 +29,14 @@ class Tank(pygame.sprite.Sprite):
 
         self.image = self.original_image
 
+
+
         self.rectKeskpunkt = (x,y)
         self.rect = self.image.get_rect(center=self.rectKeskpunkt)
         self.mask = pygame.mask.from_surface(self.image)
-        self.h = h
-        self.kiirus = 3
+        self.h = self.image.get_height()
+        self.kuuliKiirus = kuuliKiirus
+        self.kiirus = 5
 
         self.salve_maht = 1
         self.salv = self.salve_maht
@@ -41,8 +44,18 @@ class Tank(pygame.sprite.Sprite):
         self.laadimise_algus = None
         self.laadimise_kestus = 2000
 
+        self.voimendus1 = voimendus1
+        self.voimendus2 = voimendus2
+        self.voimendus3 = voimendus3
+
         self.tulistamisHeli = pygame.mixer.Sound("audio/tulistamine.mp3")
         self.plahvatusHeli = pygame.mixer.Sound("audio/plahvatus.mp3")
+
+        self.tulistamisHeli.set_volume(heliEfektiValjusus)
+        self.plahvatusHeli.set_volume(heliEfektiValjusus)
+
+
+
 
         self.plahvatus_kaadrid = []
         self.plahvatus_aktiivne = False
@@ -54,11 +67,13 @@ class Tank(pygame.sprite.Sprite):
         gif_path = "gif/tankiPauk.gif"
         gif = Image.open(gif_path)
         try:
+
             while True:
                 frame = gif.copy().convert("RGBA")
                 pygame_kaader = pygame.image.fromstring(frame.tobytes(), frame.size, frame.mode)
                 self.plahvatus_kaadrid.append(pygame.transform.scale(pygame_kaader, (50, 50)))
                 gif.seek(gif.tell() + 1)
+
         except EOFError:
             pass
 
@@ -122,9 +137,8 @@ class Tank(pygame.sprite.Sprite):
 
             self.tulistamisHeli.play()
 
-            return Kuul(-self.angle + 90, 5, kuuliPunkt[0], kuuliPunkt[1],
-                        powerupCosinus=False, powerupLaser=False,
-                        powerupKiirus=False, powerupSuurus=False)
+            return Kuul(suund=-self.angle + 90, kiirus=self.kuuliKiirus, x=kuuliPunkt[0], y=kuuliPunkt[1],
+                        powerupCosinus=self.voimendus3, powerupKiirus=self.voimendus1, powerupSuurus=self.voimendus2, powerupLaser=self.voimendus3)
         return None
 
     def uuendaSalv(self):
