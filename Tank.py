@@ -6,6 +6,7 @@ Kui ei pane seda recti peame kontrollima kas ta kontrollib kõik seintega mapi p
 import pygame
 from math import sin, cos,sqrt, radians, dist
 from Kuul import Kuul
+from PIL import Image
 
 #see on varastatud, ma vist teen yppimise pyhimyttel ise mingi hetk
 class Tank(pygame.sprite.Sprite):
@@ -25,11 +26,32 @@ class Tank(pygame.sprite.Sprite):
         self.h = h
         self.kiirus = 3
 
+
         self.salve_maht = 5
         self.salv = self.salve_maht
         self.laadib = False
         self.laadimise_algus = None
         self.laadimise_kestus = 5000
+
+
+        self.plahvatus_kaadrid = []
+        self.plahvatus_aktiivne = False
+        self.plahvatus_frame_index = 0
+        self.plahvatus_timer = 0
+        self.plahvatus_valmis = False
+
+        # Lae kaadrid .gif-failist
+        gif_path = "gif/tankiPauk.gif"
+        gif = Image.open(gif_path)
+        try:
+            while True:
+                frame = gif.copy().convert("RGBA")
+                pygame_kaader = pygame.image.fromstring(frame.tobytes(), frame.size, frame.mode)
+                self.plahvatus_kaadrid.append(pygame.transform.scale(pygame_kaader, (50, 50)))
+                gif.seek(gif.tell() + 1)
+        except EOFError:
+            pass
+
 
     def keera(self, suund,seinad):
         if suund == 0:
@@ -141,8 +163,6 @@ class Tank(pygame.sprite.Sprite):
         return self.kiirus
 
     def joonistaSalveIndikaator(self, ekraan):
-        # Joonista tank
-        ekraan.blit(self.image, self.rect)
 
         # Arvuta toru otsa punkt
         toruVektor = pygame.Vector2.from_polar((self.h / 2 + 9, -self.angle + 90))
@@ -153,3 +173,27 @@ class Tank(pygame.sprite.Sprite):
 
         # Joonista väike ruut
         pygame.draw.rect(ekraan, varv, pygame.Rect(indikaatori_pos[0] - 4, indikaatori_pos[1] - 4, 8, 8))
+
+
+    def alustaPlahvatus(self):
+        self.plahvatus_aktiivne = True
+        self.plahvatus_frame_index = 0
+        self.plahvatus_timer = pygame.time.get_ticks()
+
+    def joonistaPauk(self, ekraan):
+
+        # Kui plahvatus on aktiivne, joonista selle kaader
+        if self.plahvatus_aktiivne:
+            aeg = pygame.time.get_ticks()
+            if aeg - self.plahvatus_timer > 50:
+                self.plahvatus_timer = aeg
+                self.plahvatus_frame_index += 1
+
+            if self.plahvatus_frame_index < len(self.plahvatus_kaadrid):
+                kaader = self.plahvatus_kaadrid[self.plahvatus_frame_index]
+                rect = kaader.get_rect(center=self.rect.center)
+                ekraan.blit(kaader, rect)
+            else:
+                # Kui kõik kaadrid on läbi, märgi tank eemaldatavaks
+                self.plahvatus_aktiivne = False
+                self.plahvatus_valmis = True

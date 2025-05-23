@@ -6,7 +6,7 @@ from liikumine import Liikumine
 import sys
 import time
 import copy
-#s
+
 class Myng:
     def __init__(self, kaardiLaius, kaardiKyrgus, tileSuurus, tankideLiikumisProfiilid):
         pygame.init()
@@ -32,14 +32,16 @@ class Myng:
         self.kaart.randomizedKruskalAlgoritm()
         self.seinad = self.kaart.drawMap()
 
-
     def looTankid(self):
         tekkeKohad = self.kaart.leiaTankideleTekkeKohad(len(self.liikumisProfiilid))
         for koht in tekkeKohad:
-            uusTank = Tank(koht[0] * self.tileSuurus + self.tileSuurus / 2, koht[1] * self.tileSuurus + self.tileSuurus / 2, 20, 30, (0, 0, 255))
+            uusTank = Tank(
+                koht[0] * self.tileSuurus + self.tileSuurus / 2,
+                koht[1] * self.tileSuurus + self.tileSuurus / 2,
+                20, 30, (0, 0, 255)
+            )
             self.tankid.append(uusTank)
             self.tankideGrupp.add(uusTank)
-
 
     def nullindaSkoor(self):
         pass
@@ -50,7 +52,8 @@ class Myng:
                 sys.exit()
 
         vajutused = pygame.key.get_pressed()
-        uuedKuulid = self.liikumine.teeLiigutus([pygame.key.name(k) for k in range(len(vajutused)) if vajutused[k]], self.seinad)
+        nupud = [pygame.key.name(k) for k in range(len(vajutused)) if vajutused[k]]
+        uuedKuulid = self.liikumine.teeLiigutus(nupud, self.seinad)
         for kuul in uuedKuulid:
             self.kuulid.append(kuul)
             self.kuulideGrupp.add(kuul)
@@ -66,7 +69,6 @@ class Myng:
         self.looKaart()
         self.looTankid()
         self.liikumine = Liikumine(self.tankid, copy.deepcopy(self.liikumisProfiilid))
-
 
     def run(self):
         self.restart()
@@ -85,32 +87,44 @@ class Myng:
                 else:
                     self.kuulid.remove(kuul)
 
-            for tank in self.tankid[:]:
-                tank.uuendaSalv()  # ← uuendab salve seisundit ajapõhiselt
-
-                if tank.alive():
-                    tank.tangiCollisionSeinadCheck(self.seinad)
-                    if tank.tankiKuuliCollision(self.kuulideGrupp):
-                        tank.kill()
-                        print("enne", self.liikumisProfiilid)
-                        self.liikumine.kustutaTank(tank)
-                        print("pärast", self.liikumisProfiilid)
-
-
+            # ↪ Kui ainult 1 tank jääb järele, restartime
             if len(self.tankid) <= 1:
                 self.restart()
 
 
-            self.tankideGrupp.draw(self.ekraan)
+            # Kuulid joonistame sprite-grupiga
             self.kuulideGrupp.draw(self.ekraan)
+            self.tankideGrupp.draw(self.ekraan)
 
+            for tank in self.tankid[:]:
+                tank.uuendaSalv()
+
+                if tank.alive():
+                    tank.tangiCollisionSeinadCheck(self.seinad)
+                    if tank.tankiKuuliCollision(self.kuulideGrupp):
+                        if not tank.plahvatus_aktiivne:
+                            self.liikumine.blokeeriLiikumist(tank)
+                            tank.alustaPlahvatus()
+
+                if tank.plahvatus_valmis:
+                    tank.kill()
+                    self.liikumine.kustutaTank(tank)
+
+                tank.joonistaPauk(self.ekraan)
+
+            # Salve indikaatorid
             for tank in self.tankid:
                 tank.joonistaSalveIndikaator(self.ekraan)
 
             pygame.display.flip()
 
 
-
 if __name__ == '__main__':
-    myng = Myng(12,6, 100,[{"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"i": "edasi", "k": "tagasi", "j": "vasakule", "l": "paremale", "o": "tulista"}])
+    myng = Myng(
+        12, 6, 100,
+        [
+            {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale", "f": "tulista"},
+            {"i": "edasi", "k": "tagasi", "j": "vasakule", "l": "paremale", "o": "tulista"}
+        ]
+    )
     myng.run()
