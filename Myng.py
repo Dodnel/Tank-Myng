@@ -6,10 +6,11 @@ from liikumine import Liikumine
 import sys
 import time
 import copy
-
+#s
 class Myng:
     def __init__(self, kaardiLaius, kaardiKyrgus, tileSuurus, tankideLiikumisProfiilid):
         pygame.init()
+
         self.clock = pygame.time.Clock()
         self.kaart = Kaart(kaardiLaius, kaardiKyrgus, tileSuurus)
         self.resolutsioon = self.kaart.saaResolutsioon()
@@ -27,6 +28,10 @@ class Myng:
         self.liikumine = None
         self.kuulid = []
 
+        ikoon = pygame.image.load("pildid/pixil-frame-0.png")
+        pygame.display.set_icon(ikoon)
+        pygame.display.set_caption("Tanki myng")
+
     def looKaart(self):
         self.kaart.lammutaKaart()
         self.kaart.randomizedKruskalAlgoritm()
@@ -34,12 +39,9 @@ class Myng:
 
     def looTankid(self):
         tekkeKohad = self.kaart.leiaTankideleTekkeKohad(len(self.liikumisProfiilid))
-        for koht in tekkeKohad:
-            uusTank = Tank(
-                koht[0] * self.tileSuurus + self.tileSuurus / 2,
-                koht[1] * self.tileSuurus + self.tileSuurus / 2,
-                20, 30, (0, 0, 255)
-            )
+        for koht, vyrv in zip(tekkeKohad, ["roheline","sinine","punane","kollane"]):
+
+            uusTank = Tank(koht[0] * self.tileSuurus + self.tileSuurus / 2, koht[1] * self.tileSuurus + self.tileSuurus / 2, 20, 30, vyrv)
             self.tankid.append(uusTank)
             self.tankideGrupp.add(uusTank)
 
@@ -73,11 +75,12 @@ class Myng:
     def run(self):
         self.restart()
 
+
         while True:
             self.clock.tick(60)
             self.events()
 
-            self.ekraan.fill("white")
+            self.ekraan.fill((255, 255, 255))
             for sein in self.seinad:
                 pygame.draw.rect(self.ekraan, "black", sein)
 
@@ -120,11 +123,6 @@ class Myng:
 
 
 if __name__ == '__main__':
-    myng = Myng(
-        12, 6, 100,
-        [
-            {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale", "f": "tulista"},
-            {"i": "edasi", "k": "tagasi", "j": "vasakule", "l": "paremale", "o": "tulista"}
-        ]
-    )
+    myng = Myng(12,6, 100,[{"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"},
+                           {"i": "edasi", "k": "tagasi", "j": "vasakule", "l": "paremale", "o": "tulista"}])
     myng.run()

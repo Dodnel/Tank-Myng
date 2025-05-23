@@ -90,7 +90,7 @@ class Kaart:
         :return:
         Lõpuks tagastab jada rectidega mis tuleb joonistada, (nüüd kui mõtlen oleks loogilisem drawSeinad)
         """
-        seinaPaksus = 2
+        seinaPaksus = 1
         tagastavadRectid = []
         for reaArv,rida in enumerate(self.kaart):
             for reaIndex,tile in enumerate(rida):
