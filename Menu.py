@@ -8,6 +8,8 @@ class Menyy:
         pygame.init()
         pygame.mixer.init()
 
+        self.seaded = [5, 5, 5, 5]
+
         self.aken = tk.Tk()
         self.aken.title("HÜPERTANKISÕDA - Tony Tuisk, Karl Priido Hoogand, Ander Konsap")
         self.akna_suurus_x, self.akna_suurus_y = 640, 360
@@ -28,13 +30,6 @@ class Menyy:
         self.helipilt_off = Image.open(r"sprite\heli_off.png").resize((50, 50))
         self.helipilt = ImageTk.PhotoImage(self.helipilt_on)
         self.helipilt_silt = tk.Label(self.aken, image=self.helipilt, bg=self.taustavarv, bd=0, cursor="hand2")
-
-        self.vaartus_m1 = tk.DoubleVar()
-        self.vaartus_m1.set(0)
-        self.vaartus_m2 = tk.DoubleVar()
-        self.vaartus_m2.set(0)
-        self.vaartus_m3 = tk.DoubleVar()
-        self.vaartus_m3.set(0)
 
         self.stardi_heli()
         self.loo_vidinad()
@@ -103,10 +98,6 @@ class Menyy:
             sisestus = tk.Entry(raam, textvariable=muutuja, font=("Ariel", 12), width=15)
             sisestus.pack(side="right", padx=5)
 
-        # Muutujad
-        # tile suurus default 100
-        # kaardi laius 12, kõrgus 6
-
 
         self.ruuduSuurus = tk.IntVar(value=100)
         self.kuuli_elu = tk.IntVar(value=5)
@@ -122,15 +113,10 @@ class Menyy:
 
         # Powerupid
         tk.Label(sisu_raam, text="Powerupid", font=("Arial", 16)).pack(pady=10)
-        self.powerup1 = tk.BooleanVar()
-        self.powerup2 = tk.BooleanVar()
-        self.powerup3 = tk.BooleanVar()
-        self.powerup4 = tk.BooleanVar()
 
         tk.Checkbutton(sisu_raam, text="Powerup 1", variable=self.powerup1).pack()
         tk.Checkbutton(sisu_raam, text="Powerup 2", variable=self.powerup2).pack()
         tk.Checkbutton(sisu_raam, text="Powerup 3", variable=self.powerup3).pack()
-        tk.Checkbutton(sisu_raam, text="Powerup 4", variable=self.powerup4).pack()
 
         tk.Button(sisu_raam, text="Sulge", bg=self.nupuvarv, command=self.satete_aken.destroy, font=("Arial", 16)).pack(pady=20)
 
