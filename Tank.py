@@ -41,8 +41,8 @@ class Tank(pygame.sprite.Sprite):
         self.laadimise_kestus = 5000
 
 
-        self.tulistamisHeli = pygame.mixer.Sound()
-        self.plahvatusHeli = pygame.mixer.Sound()
+        self.tulistamisHeli = pygame.mixer.Sound("audio/tulistamine.mp3")
+        self.plahvatusHeli = pygame.mixer.Sound("audio/plahvatus.mp3")
 
     def keera(self, suund,seinad):
         if suund == 0:
@@ -151,23 +151,17 @@ class Tank(pygame.sprite.Sprite):
         for i in kuuliGrupp:
             if pygame.sprite.collide_mask(self,i):
                 i.kill()
-
                 self.plahvatusHeli.play()
-
                 return True
 
     def saaKiirus(self):
         return self.kiirus
 
     def joonistaSalveIndikaator(self, ekraan):
-        # Joonista tank
-        ekraan.blit(self.image, self.rect)
-
         # Arvuta toru otsa punkt
         toruVektor = pygame.Vector2.from_polar((self.h / 2 + 9, -self.angle + 90))
         indikaatori_pos = self.rectKeskpunkt + toruVektor
 
-        # Määra värv salve põhjal
         varv = (0, 255, 0) if self.salv > 0 else (255, 0, 0)  # roheline kui on kuule, muidu punane
 
         # Joonista väike ruut
