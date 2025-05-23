@@ -1,14 +1,13 @@
 import tkinter as tk
 import pygame
 from PIL import Image, ImageTk
+from Myng import Myng
 
 
 class Menyy:
     def __init__(self):
         pygame.init()
         pygame.mixer.init()
-
-        self.seaded = [5, 5, 5, 5]
 
         self.aken = tk.Tk()
         self.aken.title("HÜPERTANKISÕDA - Tony Tuisk, Karl Priido Hoogand, Ander Konsap")
@@ -31,12 +30,40 @@ class Menyy:
         self.helipilt = ImageTk.PhotoImage(self.helipilt_on)
         self.helipilt_silt = tk.Label(self.aken, image=self.helipilt, bg=self.taustavarv, bd=0, cursor="hand2")
 
+        self.mangu_muusika_voluum_ = tk.IntVar(value=70)
+        self.sfx_voluum_ = tk.IntVar(value=70)
+        self.tileSuurus_ = tk.IntVar(value=100)
+        self.kaardiLaius_ = tk.IntVar(value=12)
+        self.kaardiKyrgus_ = tk.IntVar(value=6)
+        self.kuuli_kiirus_ = tk.IntVar(value=5)
+
+        self.voimendus1_ = tk.BooleanVar(value=False)
+        self.voimendus2_ = tk.BooleanVar(value=False)
+        self.voimendus3_ = tk.BooleanVar(value=False)
+
+        self.mangu_muusika_voluum = self.mangu_muusika_voluum_
+        self.sfx_voluum = self.sfx_voluum_
+        self.kaardiLaius = self.kaardiLaius_
+        self.kaardiKyrgus = self.kaardiKyrgus_
+        self.tileSuurus = self.tileSuurus_
+        self.kuuli_kiirus = self.kuuli_kiirus_
+        self.voimendus1 = self.voimendus1_
+        self.voimendus2 = self.voimendus2_
+        self.voimendus3 = self.voimendus3_
+
         self.stardi_heli()
         self.loo_vidinad()
 
     def stardi_myng(self):
-        # Mäng käivitatakse pygame-iga
         self.aken.destroy()
+
+        tankideLiikumisProfiilid = []
+        for kontrollid in self.tankide_kontrollid:
+            profiil = {võti: var.get() for võti, var in kontrollid.items()}
+            tankideLiikumisProfiilid.append(profiil)
+
+        myng = Myng(self.mangu_muusika_voluum.get()/100, self.sfx_voluum.get()/100, self.kaardiLaius.get(), self.kaardiKyrgus.get(), self.tileSuurus.get(), tankideLiikumisProfiilid, self.kuuli_kiirus.get(), self.voimendus1.get(), self.voimendus2.get(), self.voimendus3.get())
+        myng.start()
 
     def ava_satted(self):
         if hasattr(self, 'satete_aken') and self.satete_aken.winfo_exists():
@@ -98,27 +125,52 @@ class Menyy:
             sisestus = tk.Entry(raam, textvariable=muutuja, font=("Ariel", 12), width=15)
             sisestus.pack(side="right", padx=5)
 
+        lisa_slaider(sisu_raam, "Heli", 1, 100, self.mangu_muusika_voluum_)
+        lisa_slaider(sisu_raam, "Heliefektid", 1, 100, self.sfx_voluum_)
 
-        self.ruuduSuurus = tk.IntVar(value=100)
-        self.kuuli_elu = tk.IntVar(value=5)
-        self.kuuli_kiirus = tk.IntVar(value=10)
-        self.kuuli_suurus = tk.IntVar(value=5)
-        self.tangi_kiirus = tk.IntVar(value=3)
+        tk.Label(sisu_raam, text="Mängijate arv", font=("Arial", 16)).pack(pady=10)
+        self.mangijate_arv = tk.IntVar(value=2)
+        tk.Spinbox(sisu_raam, from_=2, to=4, textvariable=self.mangijate_arv, width=5,
+                   command=self.uuenda_kontrollivormid).pack()
 
-        lisa_tekstisisestus(sisu_raam, "Ruudu suurus", self.ruuduSuurus)
-        lisa_slaider(sisu_raam, "Kuuli eluaeg (sek)", 1, 10, self.kuuli_elu)
-        lisa_slaider(sisu_raam, "Kuuli kiirus", 1, 20, self.kuuli_kiirus)
-        lisa_slaider(sisu_raam, "Kuuli suurus", 1, 10, self.kuuli_suurus)
-        lisa_slaider(sisu_raam, "Tanki kiirus", 1, 10, self.tangi_kiirus)
+        self.kontrollide_raam = tk.Frame(sisu_raam)
+        self.kontrollide_raam.pack(pady=10)
+        self.tankide_kontrollid = []
+
+        self.uuenda_kontrollivormid()
+
+        lisa_tekstisisestus(sisu_raam, "Ruudu suurus", self.tileSuurus_)
+        lisa_tekstisisestus(sisu_raam, "Kaardi laius", self.kaardiLaius_)
+        lisa_tekstisisestus(sisu_raam, "Kaardi kõrgus", self.kaardiKyrgus_)
+        lisa_slaider(sisu_raam, "Kuuli kiirus", 1, 10, self.kuuli_kiirus_)
+
 
         # Powerupid
         tk.Label(sisu_raam, text="Powerupid", font=("Arial", 16)).pack(pady=10)
 
-        tk.Checkbutton(sisu_raam, text="Powerup 1", variable=self.powerup1).pack()
-        tk.Checkbutton(sisu_raam, text="Powerup 2", variable=self.powerup2).pack()
-        tk.Checkbutton(sisu_raam, text="Powerup 3", variable=self.powerup3).pack()
+        tk.Checkbutton(sisu_raam, text="Topeltkiirus", variable=self.voimendus1_).pack()
+        tk.Checkbutton(sisu_raam, text="Suured kuulid", variable=self.voimendus2_).pack()
+        tk.Checkbutton(sisu_raam, text="Koosinuskuulid", variable=self.voimendus3_).pack()
 
         tk.Button(sisu_raam, text="Sulge", bg=self.nupuvarv, command=self.satete_aken.destroy, font=("Arial", 16)).pack(pady=20)
+
+    def uuenda_kontrollivormid(self):
+        for widget in self.kontrollide_raam.winfo_children():
+            widget.destroy()
+        self.tankide_kontrollid.clear()
+
+        for i in range(self.mangijate_arv.get()):
+            tk.Label(self.kontrollide_raam, text=f"Mängija {i + 1} kontrollid", font=("Arial", 14)).pack(pady=5)
+
+            kontrollid = {}
+            for tegevus in ["edasi", "tagasi", "vasakule", "paremale", "tulista"]:
+                frame = tk.Frame(self.kontrollide_raam)
+                frame.pack(pady=2)
+                tk.Label(frame, text=tegevus.capitalize(), width=12, anchor="w").pack(side="left")
+                var = tk.StringVar()
+                tk.Entry(frame, textvariable=var, width=10).pack(side="left")
+                kontrollid[tegevus] = var
+            self.tankide_kontrollid.append(kontrollid)
 
     def stardi_heli(self):
         pygame.mixer.music.load(r"audio\Tanki_mangu_peamenyy_laul_copyrighted_trust.mp3")
