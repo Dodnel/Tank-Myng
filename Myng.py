@@ -33,7 +33,7 @@ class Myng:
         self.muusikaVolyym = mangu_muusika_voluum
 
         pygame.mixer.music.set_volume(self.muusikaVolyym)
-        print(pygame.mixer.music.get_volume())
+
         pygame.mixer.music.play()
 
 
@@ -63,11 +63,12 @@ class Myng:
 
     def looTankid(self):
         tekkeKohad = self.kaart.leiaTankideleTekkeKohad(len(self.liikumisProfiilid))
+        vyrvid = ["roheline", "sinine", "punane", "kollane"] + (["default"] * (len(self.liikumisProfiilid) - 4))
 
-        for i, (koht, vyrv) in enumerate(zip(tekkeKohad, ["roheline", "sinine", "punane", "kollane"])):
+        for i, (koht, vyrv) in enumerate(zip(tekkeKohad, vyrvid)):
             uusTank = Tank(x=koht[0] * self.tileSuurus + self.tileSuurus / 2,
                            y=koht[1] * self.tileSuurus + self.tileSuurus / 2,
-                            kuuliKiirus=5, vyrv=vyrv,heliEfektiValjusus=self.heliEfektiValjusus)
+                            kuuliKiirus=5, vyrv=vyrv,heliEfektiValjusus=self.heliEfektiValjusus,seinad=self.seinad)
 
             uusTank.skooriIndeks = i
 
@@ -81,7 +82,7 @@ class Myng:
 
         vajutused = pygame.key.get_pressed()
         nupud = [pygame.key.name(k) for k in range(len(vajutused)) if vajutused[k]]
-        uuedKuulid = self.liikumine.teeLiigutus(nupud, self.seinad)
+        uuedKuulid = self.liikumine.teeLiigutus(nupud)
         for kuul in uuedKuulid:
             self.kuulid.append(kuul)
             self.kuulideGrupp.add(kuul)
@@ -130,8 +131,6 @@ class Myng:
             elif len(self.tankid) == 0:
                 self.restart()
 
-
-            # Kuulid joonistame sprite-grupiga
             self.kuulideGrupp.draw(self.ekraan)
             self.tankideGrupp.draw(self.ekraan)
 
@@ -139,7 +138,7 @@ class Myng:
                 tank.uuendaSalv()
 
                 if tank.alive():
-                    tank.tangiCollisionSeinadCheck(self.seinad)
+                    tank.tangiCollisionSeinadCheck()
                     if tank.tankiKuuliCollision(self.kuulideGrupp):
                         if not tank.plahvatus_aktiivne:
                             self.liikumine.blokeeriLiikumist(tank)
@@ -170,6 +169,5 @@ class Myng:
 
 
 if __name__ == '__main__':
-    myng = Myng(kaardiLaius=12,kaardiKyrgus=6, tileSuurus=100,tankideLiikumisProfiilid=[{"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"},
-                           {"i": "edasi", "k": "tagasi", "j": "vasakule", "l": "paremale", "o": "tulista"}],heliEfektiValjusus=0.2)
+    myng = Myng(kaardiLaius=12,kaardiKyrgus=6, tileSuurus=100,tankideLiikumisProfiilid=[{"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}],heliEfektiValjusus=0.2)
     myng.run()

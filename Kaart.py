@@ -1,4 +1,4 @@
-from random import randint
+from random import choice
 
 import pygame, random
 
@@ -12,57 +12,56 @@ class Kaart:
             self.kaart = self.genereeriKaart()
         else:
             self.kaart = customMap
-        self.spawnKaart = []
 
-    def leiaTankideleTekkeKohad(self, tankidArv):
-        self.spawnKaart = []
+    def leiaTankideleTekkeKohad(self, tankideArv):
 
-        self.voimalikudKohad = []
+        def looSpawnJaVoimalikudKohad():
+            spawnKaart = []
+            voimalikudTekkeKohad = []
+            for i in range(self.kaardiLaius):
+                rida = []
+                for j in range(self.kaardiKyrgus):
+                    rida.append((i, j))
+                    voimalikudTekkeKohad.append((i, j))
+                spawnKaart.append(rida)
+            return spawnKaart, voimalikudTekkeKohad
 
-        for i in range(self.kaardiLaius):
-            rida = []
-            for j in range(self.kaardiKyrgus):
-                rida.append((i, j))
-
-            self.spawnKaart.append(rida)
-
-        def looRistkylik(kaheMyytmelineJada, x0, y0, x1, y1):
+        def looRistkylik(kaheMyytmelineJada, voimalikudKohad, x0, y0, x1, y1):
             for i in range(y0, y1 + 1):
                 for j in range(x0, x1 + 1):
                     try:
-                        kaheMyytmelineJada[abs(j)][abs(i)] = "(#, #)"
-
+                        kaheMyytmelineJada[abs(j)][abs(i)] = None
+                        voimalikudKohad.remove((i, j))
                     except:
                         pass
+            return kaheMyytmelineJada, voimalikudKohad
 
-            return kaheMyytmelineJada
+        ristkylikuRaadius = 5
+        if self.kaardiLaius >= self.kaardiKyrgus:
+            ristKylikuRaadius = self.kaardiKyrgus
+        else:
+            ristkylikuRaadius = self.kaardiLaius
 
-        blokk = self.spawnKaart
+        tekkeKohad = []
+        while len(tekkeKohad) < tankideArv:
+            spawnKaart, voimalikudTekkeKohad = looSpawnJaVoimalikudKohad()
+            tekkeKohad = []
+            for i in range(tankideArv):
+                if voimalikudTekkeKohad:
+                    tankiX, tankiY = choice(voimalikudTekkeKohad)
+                    spawnKaart, voimalikudTekkeKohad = looRistkylik(spawnKaart,voimalikudTekkeKohad,
+                                                                    tankiX - ristKylikuRaadius,
+                                                                    tankiY - ristKylikuRaadius,
+                                                                    tankiX + ristkylikuRaadius,
+                                                                    tankiY + ristkylikuRaadius)
 
-        for i in range(tankidArv):
+                    tekkeKohad.append((tankiX, tankiY))
+                else:
+                    if ristkylikuRaadius == 0:
+                        pass
+                    ristkylikuRaadius -= 1
 
-            jah = True
-            r = tankidArv
-
-            while jah:
-
-                tankiX, tankiY = randint(0, self.kaardiLaius - 1), randint(0, self.kaardiKyrgus - 1)
-
-                for rida in blokk:
-                    if (tankiX, tankiY) in rida:
-
-                        self.voimalikudKohad.append((tankiX, tankiY))
-
-                        blokk = looRistkylik(blokk, tankiX - r, tankiY - r, tankiX + r, tankiY + r)
-
-                        jah = False
-
-                    else:
-
-                        if not r >= 0:
-                            r -= 1
-
-        return self.voimalikudKohad
+        return tekkeKohad
 
 
 
@@ -194,6 +193,6 @@ class Kaart:
 
 
 if __name__ == "__main__":
-    kaart = Kaart(kaardiLaius=10, kaardiKyrgus=10)
+    kaart = Kaart(kaardiLaius=12, kaardiKyrgus=6)
 
-    print(kaart.leiaTankideleTekkeKohad(2))
+    print(kaart.leiaTankideleTekkeKohad(72))

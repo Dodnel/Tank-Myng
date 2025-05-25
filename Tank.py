@@ -10,7 +10,7 @@ from PIL import Image
 
 #see on varastatud, ma vist teen yppimise pyhimyttel ise mingi hetk
 class Tank(pygame.sprite.Sprite):
-    def __init__(self, x, y, vyrv, kuuliKiirus=5, heliEfektiValjusus: float=0.2, voimendus1: bool=False, voimendus2: bool=False, voimendus3: bool=False):
+    def __init__(self, x, y, vyrv, seinad: list, kuuliKiirus=5, heliEfektiValjusus: float=0.2, voimendus1: bool=False, voimendus2: bool=False, voimendus3: bool=False):
         pygame.sprite.Sprite.__init__(self)
         self.angle = 0
         #self.original_image = pygame.Surface([w, h], pygame.SRCALPHA)
@@ -37,6 +37,7 @@ class Tank(pygame.sprite.Sprite):
         self.h = self.image.get_height()
         self.kuuliKiirus = kuuliKiirus
         self.kiirus = 5
+        self.seinad = seinad
 
         self.salve_maht = 1
         self.salv = self.salve_maht
@@ -78,7 +79,7 @@ class Tank(pygame.sprite.Sprite):
             pass
 
 
-    def keera(self, suund,seinad):
+    def keera(self, suund):
         if suund == 0:
             return
 
@@ -95,13 +96,13 @@ class Tank(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=self.rect.center)
         self.mask = pygame.mask.from_surface(self.image)
 
-        if self.tangiCollisionSeinadCheck(seinad):
+        if self.tangiCollisionSeinadCheck():
             self.image = imageRevert
             self.rect = rectRevert
             self.mask = maskRevert
             self.angle = angleRevert
 
-    def liigu(self, suund,seinad):
+    def liigu(self, suund):
         if suund == 0:
             return
         kraadid = self.angle % 360
@@ -119,7 +120,7 @@ class Tank(pygame.sprite.Sprite):
         self.rectKeskpunkt = (self.rectKeskpunkt[0] + xMuutja * suund, self.rectKeskpunkt[1] + yMuutja * suund)
         self.rect = self.image.get_rect(center=self.rectKeskpunkt)
 
-        if self.tangiCollisionSeinadCheck(seinad):
+        if self.tangiCollisionSeinadCheck():
             self.rectKeskpunkt = rectKeskpunktRevert
             self.rect = rectRevert
 
@@ -148,9 +149,9 @@ class Tank(pygame.sprite.Sprite):
                 self.salv = self.salve_maht
                 self.laadib = False
 
-    def tangiCollisionSeinadCheck(self,seinad):
+    def tangiCollisionSeinadCheck(self):
 
-        maskitavadSeinad = self.rect.collidelistall(seinad)
+        maskitavadSeinad = self.rect.collidelistall(self.seinad)
         if maskitavadSeinad:
 #            vyhimKaugus = float('inf')
 #            for sein in maskitavadSeinad: #mingil moel vyimaldab tangil seintes lybi minna
@@ -163,7 +164,7 @@ class Tank(pygame.sprite.Sprite):
 #                    lyhimSein = sein
             for sein in maskitavadSeinad:
 
-                sein = seinad[sein]
+                sein = self.seinad[sein]
                 rect_mask = pygame.mask.Mask((sein.width, sein.height))
                 rect_mask.fill()
                 offset_x = sein.left - self.rect.left
