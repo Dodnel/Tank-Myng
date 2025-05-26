@@ -2,6 +2,7 @@ import tkinter as tk
 import pygame
 from PIL import Image, ImageTk
 from Myng import Myng
+from tkinter import messagebox
 
 
 class Menyy:
@@ -47,23 +48,51 @@ class Menyy:
         self.kaardiKyrgus = self.kaardiKyrgus_
         self.tileSuurus = self.tileSuurus_
         self.kuuli_kiirus = self.kuuli_kiirus_
+        self.tankide_kontrollid = []
         self.voimendus1 = self.voimendus1_
         self.voimendus2 = self.voimendus2_
         self.voimendus3 = self.voimendus3_
+
+        self.kontrollide_raam = None
 
         self.stardi_heli()
         self.loo_vidinad()
 
     def stardi_myng(self):
-        self.aken.destroy()
+        self.uuenda_kontrollivormid()
 
-        tankideLiikumisProfiilid = []
-        for kontrollid in self.tankide_kontrollid:
-            profiil = {võti: var.get() for võti, var in kontrollid.items()}
-            tankideLiikumisProfiilid.append(profiil)
+        if not self.tankide_kontrollid:
+            messagebox.showerror("Viga", "Palun määra mängijate arv ja kontrollid sätetes.")
+            return
 
-        myng = Myng(self.mangu_muusika_voluum.get()/100, self.sfx_voluum.get()/100, self.kaardiLaius.get(), self.kaardiKyrgus.get(), self.tileSuurus.get(), tankideLiikumisProfiilid, self.kuuli_kiirus.get(), self.voimendus1.get(), self.voimendus2.get(), self.voimendus3.get())
-        myng.start()
+        # Kontrolli, et kõik kontrollid oleks täidetud
+        for i, kontrollid in enumerate(self.tankide_kontrollid, start=1):
+            for suund, var in kontrollid.items():
+                if not var.get():
+                    messagebox.showerror("Viga", f"Mängija {i} kontroll '{suund}' on täitmata.")
+                    return
+
+        try:
+            myng = Myng(
+                self.mangu_muusika_voluum.get() / 100,
+                self.sfx_voluum.get() / 100,
+                int(self.kaardiLaius.get()),
+                int(self.kaardiKyrgus.get()),
+                int(self.tileSuurus.get()),
+                [  # teisenda kontrollid õige struktuuriga listiks
+                    {
+                        suund: var.get() for suund, var in kontrollid.items()
+                    }
+                    for kontrollid in self.tankide_kontrollid
+                ],
+                int(self.kuuli_kiirus.get()),
+                int(self.voimendus1.get()),
+                int(self.voimendus2.get()),
+                int(self.voimendus3.get())
+            )
+            myng.run()
+        except Exception as e:
+            messagebox.showerror("Viga", f"Mängu käivitamine ebaõnnestus:\n{e}")
 
     def ava_satted(self):
         if hasattr(self, 'satete_aken') and self.satete_aken.winfo_exists():
@@ -155,9 +184,19 @@ class Menyy:
         tk.Button(sisu_raam, text="Sulge", bg=self.nupuvarv, command=self.satete_aken.destroy, font=("Arial", 16)).pack(pady=20)
 
     def uuenda_kontrollivormid(self):
+        if self.kontrollide_raam is None:
+            return
+        if not self.kontrollide_raam.winfo_exists():
+            return
+
         for widget in self.kontrollide_raam.winfo_children():
             widget.destroy()
         self.tankide_kontrollid.clear()
+
+        default_kontrollid = [
+            {"edasi": "w", "tagasi": "s", "vasakule": "a", "paremale": "d", "tulista": "f"},
+            {"edasi": "i", "tagasi": "k", "vasakule": "j", "paremale": "l", "tulista": "o"},
+        ]
 
         for i in range(self.mangijate_arv.get()):
             tk.Label(self.kontrollide_raam, text=f"Mängija {i + 1} kontrollid", font=("Arial", 14)).pack(pady=5)
@@ -167,9 +206,14 @@ class Menyy:
                 frame = tk.Frame(self.kontrollide_raam)
                 frame.pack(pady=2)
                 tk.Label(frame, text=tegevus.capitalize(), width=12, anchor="w").pack(side="left")
+
                 var = tk.StringVar()
+                if i < len(default_kontrollid):
+                    var.set(default_kontrollid[i][tegevus])
+
                 tk.Entry(frame, textvariable=var, width=10).pack(side="left")
                 kontrollid[tegevus] = var
+
             self.tankide_kontrollid.append(kontrollid)
 
     def stardi_heli(self):
