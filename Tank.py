@@ -12,29 +12,21 @@ from PIL import Image
 class Tank(pygame.sprite.Sprite):
     def __init__(self, x, y, vyrv, seinad: list, kuuliKiirus=5, heliEfektiValjusus: float=0.2, voimendus1: bool=False, voimendus2: bool=False, voimendus3: bool=False):
         pygame.sprite.Sprite.__init__(self)
-        self.angle = 0
-        #self.original_image = pygame.Surface([w, h], pygame.SRCALPHA)
 
-        vyrvid = {"sinine": "Sprites/sinine.png",
-                  "roheline": "Sprites/roheline.png",
-                  "punane": "Sprites/punane.png",
-                  "kollane": "Sprites/kollane.png"}
-
+        vyrvid = ["sinine", "roheline", "punane", "kollane"]
         if vyrv in vyrvid:
-            vyrv = vyrvid[vyrv.lower()]
+            vyrv = f"Sprites/{vyrv}.png"
         else:
             vyrv = "Sprites/default.png"
 
         self.original_image = pygame.image.load(vyrv)
-
         self.image = self.original_image
-
-
-
         self.rectKeskpunkt = (x,y)
         self.rect = self.image.get_rect(center=self.rectKeskpunkt)
         self.mask = pygame.mask.from_surface(self.image)
         self.h = self.image.get_height()
+        self.angle = 0
+
         self.kuuliKiirus = kuuliKiirus
         self.kiirus = 5
         self.seinad = seinad
@@ -51,12 +43,8 @@ class Tank(pygame.sprite.Sprite):
 
         self.tulistamisHeli = pygame.mixer.Sound("audio/tulistamine.mp3")
         self.plahvatusHeli = pygame.mixer.Sound("audio/plahvatus.mp3")
-
         self.tulistamisHeli.set_volume(heliEfektiValjusus)
         self.plahvatusHeli.set_volume(heliEfektiValjusus)
-
-
-
 
         self.plahvatus_kaadrid = []
         self.plahvatus_aktiivne = False
@@ -80,6 +68,11 @@ class Tank(pygame.sprite.Sprite):
 
 
     def keera(self, suund):
+        """
+        Keerab tanki spritei kindlat arv kraade.
+        :param suund: mis suunas tank peaks keerama, 1 - paremale, -1 - vasakule
+        :return: None
+        """
         if suund == 0:
             return
 
@@ -103,6 +96,11 @@ class Tank(pygame.sprite.Sprite):
             self.angle = angleRevert
 
     def liigu(self, suund):
+        """
+        Liigutab tanki spriti edasi või tagasi kindlal kiirusel
+        :param suund: mis suunas tank liigub, kas edasi või tagasi. Märgitud 1ga (edasi) ja -1 (tagasi)
+        :return:
+        """
         if suund == 0:
             return
         kraadid = self.angle % 360
@@ -125,6 +123,10 @@ class Tank(pygame.sprite.Sprite):
             self.rect = rectRevert
 
     def tulista(self):
+        """
+        Loob kuuli tanki suunaga ja kiirusega arvestades
+        :return: tagastab Kuuli objekti juhul kui tal on salves kuule, teisel juhul mitte midagi
+        """
         if self.laadib:
             return None
 
@@ -143,6 +145,10 @@ class Tank(pygame.sprite.Sprite):
         return None
 
     def uuendaSalv(self):
+        """
+        Laeb tanki salve ära jälle kui on mõõdunud aeg, mis kulub tanki laadimisele
+        :return: None
+        """
         if self.laadib:
             aeg = pygame.time.get_ticks()
             if aeg - self.laadimise_algus >= self.laadimise_kestus:
@@ -150,65 +156,68 @@ class Tank(pygame.sprite.Sprite):
                 self.laadib = False
 
     def tangiCollisionSeinadCheck(self):
-
+        """
+        Võtab kõik seinad mängus ja siis vaatab kas ta collidib ühe nendega, kui collidib loob sellest seinast maski
+        ja võrdleb seda maski enda maskiga et aru saada kas nad collidavad. Nii on tehtud sest maskide collisionid
+        on päris kallid ajaliselt.
+        :return: tagastab tõeväärtuse sõltuvalt sellest, et kas tank on lõikanud enda lähedal olevat seina
+        """
         maskitavadSeinad = self.rect.collidelistall(self.seinad)
         if maskitavadSeinad:
-#            vyhimKaugus = float('inf')
-#            for sein in maskitavadSeinad: #mingil moel vyimaldab tangil seintes lybi minna
-#                #eeldan et see on seinte nurkade pyrast Kui parandada, siis peaksin mergima sirged seinad,
-#                sein = seinad[sein]
-#                punkt1 = sein.center
-#                punkt2 = self.rect.center
-#
-#                if dist(punkt1,punkt2) < vyhimKaugus:
-#                    lyhimSein = sein
             for sein in maskitavadSeinad:
-
                 sein = self.seinad[sein]
-                rect_mask = pygame.mask.Mask((sein.width, sein.height))
-                rect_mask.fill()
-                offset_x = sein.left - self.rect.left
-                offset_y = sein.top - self.rect.top
+                rectMask = pygame.mask.Mask((sein.width, sein.height))
+                rectMask.fill()
+                offsetX = sein.left - self.rect.left
+                offsetY = sein.top - self.rect.top
 
-                if self.mask.overlap(rect_mask, (offset_x, offset_y)):
+                if self.mask.overlap(rectMask, (offsetX, offsetY)):
                     return True
         return False
 
 
-        # vyiks tagastada booleani
-        # teeks liikumist nii et simuleerib tangi liikumist yhe frami vyrra eespool ja siis kui
-        # peaks collidima siis mitte lubada.
-
-
     def tankiKuuliCollision(self, kuuliGrupp):
+        """
+        vaatab kas tank collidib ühegi kuuliga, mis mängus on peal
+        :param kuuliGrupp: Kuulide sprite group
+        :return: tagastab tõeväärtuse sõltuvalt sellest, et kas collidib
+        """
         hit = []
         for i in kuuliGrupp:
             if pygame.sprite.collide_mask(self,i):
                 i.kill()
                 self.plahvatusHeli.play()
                 return True
+        return False
 
-    def saaKiirus(self):
-        return self.kiirus
-
-    def joonistaSalveIndikaator(self, ekraan):
-
-        # Arvuta toru otsa punkt
+    def joonistaSalveIndikaator(self):
+        """
+        Joonistab väikse kastikese tanki ette, mis kuvab mängijale, et kas tal on võimalik tulistada
+        :return: tagastab recti ja selle vyrvi
+        """
         toruVektor = pygame.Vector2.from_polar((self.h / 2 + 9, -self.angle + 90))
         indikaatori_pos = self.rectKeskpunkt + toruVektor
 
         varv = (0, 255, 0) if self.salv > 0 else (255, 0, 0)  # roheline kui on kuule, muidu punane
 
-        # Joonista väike ruut
-        pygame.draw.rect(ekraan, varv, pygame.Rect(indikaatori_pos[0] - 4, indikaatori_pos[1] - 4, 8, 8))
+        return pygame.Rect(indikaatori_pos[0] - 4, indikaatori_pos[1] - 4, 8, 8), varv
 
 
     def alustaPlahvatus(self):
+        """
+        Alustab tanki plahvatuse gifi kuvamist
+        :return: None
+        """
         self.plahvatus_aktiivne = True
         self.plahvatus_frame_index = 0
         self.plahvatus_timer = pygame.time.get_ticks()
 
     def joonistaPauk(self, ekraan):
+        """
+        joonistab plahvatuse kaadreid
+        :param ekraan: ekraan kuhu need kaadrid joonistatake
+        :return: None
+        """
         if self.plahvatus_aktiivne:
             aeg = pygame.time.get_ticks()
             if aeg - self.plahvatus_timer > 50:

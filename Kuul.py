@@ -39,13 +39,18 @@ class Kuul(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(self.kuul, self.suund)
 
     def kustutaObject(self):
+        """
+        Kustutab kuuli ära
+        :return: None
+        """
         self.kill()
 
+    def kalkuleeriLiikumine(self, seinad):
+        """
 
-    def saaKuuliSuurus(self):
-        return self.kuul.get_size()[0]
-
-    def kalkuleeriLiikumine(self, seinad) -> None:
+        :param seinad:
+        :return:
+        """
         # Salvestame eelmise asukoha
         eel_x, eel_y = self.x, self.y
 

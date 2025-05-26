@@ -1,10 +1,8 @@
 import pygame
 from Kaart import Kaart
-from Kuul import Kuul
 from Tank import Tank
 from liikumine import Liikumine
 import sys
-import time
 import copy
 #s
 class Myng:
@@ -56,11 +54,19 @@ class Myng:
         pygame.display.set_caption("Tanki myng")
 
     def looKaart(self):
+        """
+        loob kaardi seinad
+        :return: None
+        """
         self.kaart.lammutaKaart()
         self.kaart.randomizedKruskalAlgoritm()
         self.seinad = self.kaart.drawMap()
 
     def looTankid(self):
+        """
+        Loob tankid ja paneb naad kaardile paika
+        :return: None
+        """
         tekkeKohad = self.kaart.leiaTankideleTekkeKohad(len(self.liikumisProfiilid))
         vyrvid = ["roheline", "sinine", "punane", "kollane"] + (["default"] * (len(self.liikumisProfiilid) - 4))
 
@@ -75,18 +81,27 @@ class Myng:
             self.tankideGrupp.add(uusTank)
 
     def events(self):
+        """
+        Jälgib kõike evente mis on meile tähtsad: alla vajutatud klahvid liikumiseks ja exit nupu vajutamist.
+        :return: None
+        """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
 
         vajutused = pygame.key.get_pressed()
         nupud = [pygame.key.name(k) for k in range(len(vajutused)) if vajutused[k]]
+
         uuedKuulid = self.liikumine.teeLiigutus(nupud)
         for kuul in uuedKuulid:
             self.kuulid.append(kuul)
             self.kuulideGrupp.add(kuul)
 
     def restart(self):
+        """
+        Paneb kõik mängu loogika muutujad tagaasi algasendisse
+        :return: None
+        """
         self.tankid = []
         self.kuulid = []
         self.kuulideGrupp = pygame.sprite.Group()
@@ -96,12 +111,15 @@ class Myng:
         self.liikumine = Liikumine(self.tankid, copy.deepcopy(self.liikumisProfiilid))
 
     def run(self):
+        """
+        Paneb mängu tööle
+        :return:
+        """
+
+        #siin pannakse kõik vajalikud asjad paika
         self.restart()
 
         yksVieendikLaiusest = self.laiusPikslites / 5
-
-
-
         taustaPilt = pygame.image.load("pildid/taustaPilt.jpg").convert()
         taustaPilt = pygame.transform.scale(taustaPilt, (self.laiusPikslites,self.kyrgusPikslites))
 
@@ -122,7 +140,7 @@ class Myng:
                 else:
                     self.kuulid.remove(kuul)
 
-            if len(self.tankid) == 1:
+            if len(self.tankid) == 1: #loogika selleks, et kas on üks tank elus -> myngu restart ja skoori lisamine
                 ellujyynu = self.tankid[0]
                 self.skoor[ellujyynu.skooriIndeks] += 1
                 self.restart()
@@ -135,9 +153,10 @@ class Myng:
 
             for tank in self.tankid[:]:
                 tank.uuendaSalv()
+                salveIndikaator, vyrv = tank.joonistaSalveIndikaator()
+                pygame.draw.rect(self.ekraan, rect=salveIndikaator, color=vyrv)
 
                 if tank.alive():
-                    tank.tangiCollisionSeinadCheck()
                     if tank.tankiKuuliCollision(self.kuulideGrupp):
                         if not tank.plahvatus_aktiivne:
                             self.liikumine.blokeeriLiikumist(tank)
@@ -148,11 +167,9 @@ class Myng:
                     self.liikumine.kustutaTank(tank)
                 tank.joonistaPauk(self.ekraan)
 
-            for tank in self.tankid:
-                tank.joonistaSalveIndikaator(self.ekraan)
-
             for skoor, pilt, offset in zip(self.skoor, ["rohelineSkoor", "sinineSkoor", "punaneSkoor", "kollaneSkoor"],
-                                           range(1, 5)):
+                                           range(1, 5)): #skoori ala joonistamine ekraanile
+
                 skooriPilt = pygame.image.load(f"pildid/{pilt}.png")
                 skooriPilt = pygame.transform.scale(skooriPilt, (75, 75))
 
@@ -168,5 +185,5 @@ class Myng:
 
 
 if __name__ == '__main__':
-    myng = Myng(kaardiLaius=12,kaardiKyrgus=6, tileSuurus=100,tankideLiikumisProfiilid=[{"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}],heliEfektiValjusus=0.2)
+    myng = Myng(kaardiLaius=6,kaardiKyrgus=6, tileSuurus=100,tankideLiikumisProfiilid=[{"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}],heliEfektiValjusus=0.2)
     myng.run()

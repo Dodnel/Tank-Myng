@@ -145,13 +145,14 @@ class Kaart:
 
     def randomizedKruskalAlgoritm(self):
         """
-        Kastuab randomised Kruskali algoritmi, et luua laburünt kaardi jaoks
-        :return:
+        Kastuab randomised Kruskali algoritmi, et luua laburünt kaardi jaoks. See kasutab sette ja nende ühendamist
+        Lõpuks lisab see need seinad kaardile
+        :return: None
         """
         setid = {}
         kylastamataSeinad = []
 
-        for i in range(self.kaardiKyrgus):
+        for i in range(self.kaardiKyrgus): #täidame kaardi seintega
             for j in range(self.kaardiLaius):
                 self.kaart[i][j] = "NSEW"
                 setid[(i, j)] = {(i, j)}
@@ -197,6 +198,10 @@ class Kaart:
                     setid[cell] = uusSet
 
     def lisaSeinad(self):
+        """
+        Lisab ükskõik, mis kaardi ümber seinad.
+        :return: None
+        """
         for i in range(len(self.kaart[0])):
             self.kaart[0][i] = "N"
             self.kaart[-1][i] = "S"
@@ -215,6 +220,10 @@ class Kaart:
         self.kaart[len(self.kaart) - 1][len(self.kaart[0]) - 1] = "SE"
 
     def lammutaKaart(self):
+        """
+        Tühjendab kaardi
+        :return: None
+        """
         for rida in range(len(self.kaart)):
             for veerg in range(len(self.kaart)):
                 self.kaart[rida][veerg] = ""

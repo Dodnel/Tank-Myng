@@ -3,7 +3,6 @@ import pygame
 from PIL import Image, ImageTk
 from Myng import Myng
 
-
 class Menyy:
     def __init__(self):
         pygame.init()
