@@ -5,10 +5,11 @@ from Myng import Myng
 from tkinter import messagebox
 
 class Menyy:
-    def __init__(self):
+    def __init__(self, mynguAlustamisel=None):
         pygame.init()
         pygame.mixer.init()
 
+        self.mynguAlustamisel = mynguAlustamisel
         self.aken = tk.Tk()
         self.aken.title("HÜPERTANKISÕDA - Tony Tuisk, Karl Priido Hoogand, Ander Konsap")
         self.akna_suurus_x, self.akna_suurus_y = 640, 360
@@ -72,26 +73,27 @@ class Menyy:
                     return
 
         try:
-            myng = Myng(
-                self.mangu_muusika_voluum.get() / 100,
-                self.sfx_voluum.get() / 100,
-                int(self.kaardiLaius.get()),
-                int(self.kaardiKyrgus.get()),
-                int(self.tileSuurus.get()),
-                [  # teisenda kontrollid õige struktuuriga listiks
+            self.mynguAlustamisel = Myng(
+                mangu_muusika_voluum = self.mangu_muusika_voluum.get() / 100,
+                sfx_voluum = self.sfx_voluum.get() / 100,
+                kaardiLaius = int(self.kaardiLaius.get()),
+                kaardiKyrgus = int(self.kaardiKyrgus.get()),
+                tileSuurus= int(self.tileSuurus.get()),
+                tankideLiikumisProfiilid = [
                     {
-                        suund: var.get() for suund, var in kontrollid.items()
+                        var.get(): suund for suund, var in kontrollid.items()
                     }
                     for kontrollid in self.tankide_kontrollid
                 ],
-                int(self.kuuli_kiirus.get()),
-                int(self.voimendus1.get()),
-                int(self.voimendus2.get()),
-                int(self.voimendus3.get())
+                kuuliKiirus = int(self.kuuli_kiirus.get()),
+                voimendus1 = int(self.voimendus1.get()),
+                voimendus2 = int(self.voimendus2.get()),
+                voimendus3 = int(self.voimendus3.get())
             )
-            myng.run()
+            self.aken.destroy()
+
         except Exception as e:
-            messagebox.showerror("Viga", f"Mängu käivitamine ebaõnnestus:\n{e}")
+                messagebox.showerror("Viga", f"Mängu käivitamine ebaõnnestus:\n{e}")
 
     def ava_satted(self):
         if hasattr(self, 'satete_aken') and self.satete_aken.winfo_exists():
@@ -153,8 +155,8 @@ class Menyy:
             sisestus = tk.Entry(raam, textvariable=muutuja, font=("Ariel", 12), width=15)
             sisestus.pack(side="right", padx=5)
 
-        lisa_slaider(sisu_raam, "Heli", 1, 100, self.mangu_muusika_voluum_)
-        lisa_slaider(sisu_raam, "Heliefektid", 1, 100, self.sfx_voluum_)
+        lisa_slaider(sisu_raam, "Muusika", 0, 100, self.mangu_muusika_voluum_)
+        lisa_slaider(sisu_raam, "Heliefektid", 0, 100, self.sfx_voluum_)
 
         tk.Label(sisu_raam, text="Mängijate arv", font=("Arial", 16)).pack(pady=10)
         self.mangijate_arv = tk.IntVar(value=2)
@@ -187,9 +189,12 @@ class Menyy:
             return
         if not self.kontrollide_raam.winfo_exists():
             return
+        if self.aken is None or not self.aken.winfo_exists():
+            return
 
-        for widget in self.kontrollide_raam.winfo_children():
-            widget.destroy()
+            # Clear old controls
+        for lapse in self.kontrollide_raam.winfo_children():
+            lapse.destroy()
         self.tankide_kontrollid.clear()
 
         default_kontrollid = [

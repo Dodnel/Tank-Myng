@@ -2,13 +2,14 @@ import pygame
 from Kaart import Kaart
 from Tank import Tank
 from liikumine import Liikumine
+
 import sys
 import copy
 #s
 class Myng:
     def __init__(self, mangu_muusika_voluum=0.7, sfx_voluum=0.2, kaardiLaius=12, kaardiKyrgus=6, tileSuurus=100,
                  tankideLiikumisProfiilid = None,
-                 kuuliKiirus=5, voimendus1=False, voimendus2=False, voimendus3=False, heliEfektiValjusus=0.2):
+                 kuuliKiirus=5, voimendus1=False, voimendus2=False, voimendus3=False):
         pygame.init()
         pygame.mixer.init()
 
@@ -24,19 +25,14 @@ class Myng:
         self.resolutsioon = self.kaart.saaResolutsioon()
         self.laiusPikslites, self.kyrgusPikslites = map(int, self.resolutsioon.split("x"))
 
-        self.heliEfektiValjusus = heliEfektiValjusus
+        self.sfxVoluum = sfx_voluum
 
         self.taustaMuusika = pygame.mixer.music.load(filename="audio/Battle_Symphony.mp3")
         self.muusikaVolyym = mangu_muusika_voluum
-
         pygame.mixer.music.set_volume(self.muusikaVolyym)
-
         pygame.mixer.music.play(loops=-1)
 
-
         self.ekraan = pygame.display.set_mode((self.laiusPikslites, self.kyrgusPikslites + 150))
-
-
 
         self.kuulideGrupp = pygame.sprite.Group()
         self.tankideGrupp = pygame.sprite.Group()
@@ -46,7 +42,9 @@ class Myng:
         self.liikumine = None
         self.kuulid = []
         self.skoor = [0] * len(tankideLiikumisProfiilid)
+        self.yksVieendikLaiusest = self.laiusPikslites / 5
 
+        self.nuppRect = pygame.Rect(self.laiusPikslites - self.yksVieendikLaiusest, self.kyrgusPikslites + 60, self.yksVieendikLaiusest, 50)
         self.font = pygame.font.SysFont(None, 48)
 
         ikoon = pygame.image.load("pildid/pixil-frame-0.png")
@@ -69,11 +67,10 @@ class Myng:
         """
         tekkeKohad = self.kaart.leiaTankideleTekkeKohad(len(self.liikumisProfiilid))
         vyrvid = ["roheline", "sinine", "punane", "kollane"] + (["default"] * (len(self.liikumisProfiilid) - 4))
-        print(vyrvid,tekkeKohad)
         for i, (koht, vyrv) in enumerate(zip(tekkeKohad, vyrvid)):
             uusTank = Tank(x=koht[0] * self.tileSuurus + self.tileSuurus / 2,
                            y=koht[1] * self.tileSuurus + self.tileSuurus / 2,
-                            kuuliKiirus=5, vyrv=vyrv,heliEfektiValjusus=self.heliEfektiValjusus,seinad=self.seinad)
+                            kuuliKiirus=5, vyrv=vyrv,heliEfektiValjusus=self.sfxVoluum,seinad=self.seinad)
 
             uusTank.skooriIndeks = i
 
@@ -88,6 +85,14 @@ class Myng:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                hiirePos = pygame.mouse.get_pos()
+                if self.nuppRect.collidepoint(hiirePos):
+                    raise StopIteration
+                    #error mis ei ilmu kunagi muidu meie programmis, kas oleks mõistlik teha enda exception?
+                    #Jah ilmselgelt, kas ma vitsin?, ei
+
 
         vajutused = pygame.key.get_pressed()
         nupud = [pygame.key.name(k) for k in range(len(vajutused)) if vajutused[k]]
@@ -119,7 +124,7 @@ class Myng:
         #siin pannakse kõik vajalikud asjad paika
         self.restart()
 
-        yksVieendikLaiusest = self.laiusPikslites / 5
+
         taustaPilt = pygame.image.load("pildid/taustaPilt.jpg").convert()
         taustaPilt = pygame.transform.scale(taustaPilt, (self.laiusPikslites,self.kyrgusPikslites))
 
@@ -173,7 +178,7 @@ class Myng:
                 skooriPilt = pygame.image.load(f"pildid/{pilt}.png")
                 skooriPilt = pygame.transform.scale(skooriPilt, (75, 75))
 
-                xPos = yksVieendikLaiusest * offset - yksVieendikLaiusest * 0.6
+                xPos = self.yksVieendikLaiusest * offset - self.yksVieendikLaiusest
                 yPos = self.kyrgusPikslites + 50
 
                 self.ekraan.blit(skooriPilt, (xPos, yPos))
@@ -181,9 +186,18 @@ class Myng:
                 skooriTekst = self.font.render(str(skoor), True, (0, 0, 0))
                 self.ekraan.blit(skooriTekst, (xPos + 100, yPos + 20))
 
+            nuppX, nuppY = self.laiusPikslites - self.yksVieendikLaiusest, self.kyrgusPikslites + 60
+
+            pygame.draw.rect(self.ekraan, (200, 0, 0), self.nuppRect)
+
+            tekst = self.font.render("menüü", True, (255, 255, 255))
+            tekstX = nuppX + (self.yksVieendikLaiusest - tekst.get_width()) // 2
+            tekstY = nuppY + (50 - tekst.get_height()) // 2
+            self.ekraan.blit(tekst, (tekstX, tekstY))
+
             pygame.display.flip()
 
 
 if __name__ == '__main__':
-    myng = Myng(kaardiLaius=6,kaardiKyrgus=6, tileSuurus=100,tankideLiikumisProfiilid=[{"p": "edasi", "ö": "tagasi", "l": "vasakule", "ä": "paremale","ü": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}],heliEfektiValjusus=0.2)
+    myng = Myng(kaardiLaius=6,kaardiKyrgus=6, tileSuurus=100,tankideLiikumisProfiilid=[{"p": "edasi", "ö": "tagasi", "l": "vasakule", "ä": "paremale","ü": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}],sfx_voluum=0.2, mangu_muusika_voluum=0)
     myng.run()
