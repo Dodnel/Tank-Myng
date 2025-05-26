@@ -31,7 +31,7 @@ class Myng:
 
         pygame.mixer.music.set_volume(self.muusikaVolyym)
 
-        pygame.mixer.music.play()
+        pygame.mixer.music.play(loops=-1)
 
 
         self.ekraan = pygame.display.set_mode((self.laiusPikslites, self.kyrgusPikslites + 150))
@@ -69,7 +69,7 @@ class Myng:
         """
         tekkeKohad = self.kaart.leiaTankideleTekkeKohad(len(self.liikumisProfiilid))
         vyrvid = ["roheline", "sinine", "punane", "kollane"] + (["default"] * (len(self.liikumisProfiilid) - 4))
-
+        print(vyrvid,tekkeKohad)
         for i, (koht, vyrv) in enumerate(zip(tekkeKohad, vyrvid)):
             uusTank = Tank(x=koht[0] * self.tileSuurus + self.tileSuurus / 2,
                            y=koht[1] * self.tileSuurus + self.tileSuurus / 2,
@@ -185,5 +185,5 @@ class Myng:
 
 
 if __name__ == '__main__':
-    myng = Myng(kaardiLaius=6,kaardiKyrgus=6, tileSuurus=100,tankideLiikumisProfiilid=[{"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}],heliEfektiValjusus=0.2)
+    myng = Myng(kaardiLaius=6,kaardiKyrgus=6, tileSuurus=100,tankideLiikumisProfiilid=[{"p": "edasi", "ö": "tagasi", "l": "vasakule", "ä": "paremale","ü": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}],heliEfektiValjusus=0.2)
     myng.run()

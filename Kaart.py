@@ -19,6 +19,10 @@ class Kaart:
         :param tankideArv: Mitu tanki on vaja kaardile mahutada
         :return: Tagastab järjendi antud tankide arvule spawn koordinaatidega
         """
+
+        if tankideArv > self.kaardiLaius * self.kaardiKyrgus:
+            raise Exception("Liiga palju tanke kaardi suuruse jaoks!")
+
         def looSpawnJaVoimalikudKohad():
             """
             Loob tühja spawnkaardi ja tekkekohad myngu ala suuruselt sõltuvalt
@@ -27,6 +31,7 @@ class Kaart:
             """
             spawnKaart = []
             voimalikudTekkeKohad = []
+
             for i in range(self.kaardiLaius):
                 rida = []
                 for j in range(self.kaardiKyrgus):
@@ -48,14 +53,17 @@ class Kaart:
             :return: tagastab kahemõõtmelise jada kus on eemaldatud ristküliku ala ja voimaliku kohtade jada
             kus on eemaldatud blokeeritud kohad
             """
-            for i in range(y0, y1 + 1):
-                for j in range(x0, x1 + 1):
+
+            for y in range(y0, y1 + 1):
+                for x in range(x0, x1 + 1):
                     try:
-                        kaheMyytmelineJada[abs(j)][abs(i)] = None
-                        voimalikudKohad.remove((i, j))
+                        kaheMyytmelineJada[x][y] = None
+                        voimalikudKohad.remove((x, y))
                     except:
                         pass
+
             return kaheMyytmelineJada, voimalikudKohad
+
 
         ristkylikuRaadius = 5 #vaatab kui kaugel tankid üktsteiest olema peaksid
         if self.kaardiLaius >= self.kaardiKyrgus:
@@ -63,10 +71,12 @@ class Kaart:
         else:
             ristkylikuRaadius = self.kaardiLaius
 
+
         tekkeKohad = []
         while len(tekkeKohad) < tankideArv:
             spawnKaart, voimalikudTekkeKohad = looSpawnJaVoimalikudKohad()
             tekkeKohad = []
+
             for i in range(tankideArv):
                 if voimalikudTekkeKohad:
                     tankiX, tankiY = choice(voimalikudTekkeKohad)
@@ -75,12 +85,11 @@ class Kaart:
                                                                     tankiY - ristKylikuRaadius,
                                                                     tankiX + ristkylikuRaadius,
                                                                     tankiY + ristkylikuRaadius)
-
                     tekkeKohad.append((tankiX, tankiY))
                 else:
-                    if ristkylikuRaadius == 0:
-                        raise Exception("Liiga palju tanke kaardi suuruse jaoks!")
-                    ristkylikuRaadius -= 1 #kohtde mitte leidmisel vähendakse blokeeritavat ala
+                    if ristkylikuRaadius > 1:
+                        ristkylikuRaadius -= 1 #kohtde mitte leidmisel vähendakse blokeeritavat ala
+                    break
 
         return tekkeKohad
 
@@ -227,9 +236,3 @@ class Kaart:
         for rida in range(len(self.kaart)):
             for veerg in range(len(self.kaart)):
                 self.kaart[rida][veerg] = ""
-
-
-if __name__ == "__main__":
-    kaart = Kaart(kaardiLaius=12, kaardiKyrgus=6)
-
-    print(kaart.leiaTankideleTekkeKohad(72))
