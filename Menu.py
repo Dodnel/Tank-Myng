@@ -4,7 +4,6 @@ from PIL import Image, ImageTk
 from Myng import Myng
 from tkinter import messagebox
 
-
 class Menyy:
     def __init__(self):
         pygame.init()

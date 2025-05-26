@@ -1,16 +1,3 @@
-"""
-Liikumisprofiili format - list, mille pikkus on sama mis tankide list,
-iga element Liikumisprofiilis vastab yhele tangile, järjekord loeb:
-
-igal tangil on vaja 5 kysku, selles järjestuses:
-edasi, tagasi, vasakule, paremale, tulista
-
-[{"w": "edasi", "s": "tagasi", "a", "vasakule", "d": "paremale",
- "f": "tulista"}
-]
-
-"""
-
 
 class Liikumine:
     def __init__(self, tankid: list, liikumisProfiilid: list):

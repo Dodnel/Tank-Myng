@@ -3,30 +3,41 @@ import pygame, math
 class Kuul(pygame.sprite.Sprite):
     def __init__(self, suund, kiirus: int, x, y, powerupSuurus = False, powerupKiirus = False, powerupCosinus = False, powerupLaser= False):
         pygame.sprite.Sprite.__init__(self)
+
+        # Kuuli x ja y kordinaat
         self.x = x
         self.y = y
+
+        # Suund kuuli vektorile
         self.suund = suund
 
+        # Kuuli eluaeg
         self.eluaeg = 500
         self.aeg = self.eluaeg
-        #polaar kordinaatidest otseLiikumiseVektor
 
+        # Kuuli liikumise vektor
         self.suunaVektor = pygame.Vector2()
-        self.powerupCosinus = powerupCosinus
-        self.powerupLaser = powerupLaser
-        #ei tee midagi hetkel
 
+        # Et hiljem liikumises testida kas see on True
+        self.powerupCosinus = powerupCosinus
+
+        # 2 kordistab suuruse kui võimendi on True
         if powerupSuurus:
+            # polaar kordinaatidest otseLiikumiseVektor
             self.kuul = pygame.Surface((10,20), pygame.SRCALPHA)
         else:
             self.kuul = pygame.Surface((5, 10), pygame.SRCALPHA)
 
+        # 2 kordistab kiiruse kui võimendi on True
         if powerupKiirus:
             self.otseLiikumiseVektor = pygame.Vector2.from_polar((2 * kiirus, suund))
         else:
             self.otseLiikumiseVektor = pygame.Vector2.from_polar((kiirus, suund))
 
+        # Kuuli halliks tegemine
         self.kuul.fill((125,125,125))
+
+        # Kuuli recti ja maski loomine
         self.image = self.kuul
         self.rect = self.image.get_rect(center=(x, y))
         self.mask = pygame.mask.from_surface(self.image)
@@ -39,13 +50,18 @@ class Kuul(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(self.kuul, self.suund)
 
     def kustutaObject(self):
+        """
+        Kustutab kuuli ära
+        :return: None
+        """
         self.kill()
 
+    def kalkuleeriLiikumine(self, seinad):
+        """
 
-    def saaKuuliSuurus(self):
-        return self.kuul.get_size()[0]
-
-    def kalkuleeriLiikumine(self, seinad) -> None:
+        :param seinad:
+        :return:
+        """
         # Salvestame eelmise asukoha
         eel_x, eel_y = self.x, self.y
 
@@ -55,11 +71,14 @@ class Kuul(pygame.sprite.Sprite):
 
             cosVector = pygame.Vector2(-self.otseLiikumiseVektor.y, self.otseLiikumiseVektor.x).normalize() * cos_offset
 
+            # Kuuli asukohale tanki liikumisvektori ja cos Liikumisvektori
             uus_x = self.x + self.otseLiikumiseVektor.x + cosVector.x
             uus_y = self.y + self.otseLiikumiseVektor.y + cosVector.y
 
+            # Kuuli suunavektori salvestamine
             self.suunaVektor = pygame.Vector2(self.otseLiikumiseVektor.x + cosVector.x, self.otseLiikumiseVektor.y + cosVector.y)
 
+            # Kuuli recti asukoha muutmine
             uus_rect = self.rect.copy()
             uus_rect.center = (uus_x, uus_y)
         else:
@@ -67,8 +86,10 @@ class Kuul(pygame.sprite.Sprite):
             uus_x = self.x + self.otseLiikumiseVektor.x
             uus_y = self.y + self.otseLiikumiseVektor.y
 
+            # Kuuli suunavektori salvestamine
             self.suunaVektor = self.otseLiikumiseVektor
 
+            # Kuuli recti asukoha muutmine
             uus_rect = self.rect.copy()
             uus_rect.center = (uus_x, uus_y)
 
