@@ -14,8 +14,17 @@ class Kaart:
             self.kaart = customMap
 
     def leiaTankideleTekkeKohad(self, tankideArv):
-
+        """
+        Leiab antud arv tankidele tekkekohad kaardile vaadates et tankid üksteies kõrvale ei panda.
+        :param tankideArv: Mitu tanki on vaja kaardile mahutada
+        :return: Tagastab järjendi antud tankide arvule spawn koordinaatidega
+        """
         def looSpawnJaVoimalikudKohad():
+            """
+            Loob tühja spawnkaardi ja tekkekohad myngu ala suuruselt sõltuvalt
+            :return: tagastab kaks järjendit, esimene kahemõõtmeline ja teine
+            ühemõõtmeline iga kohe koordinaadiga
+            """
             spawnKaart = []
             voimalikudTekkeKohad = []
             for i in range(self.kaardiLaius):
@@ -27,6 +36,18 @@ class Kaart:
             return spawnKaart, voimalikudTekkeKohad
 
         def looRistkylik(kaheMyytmelineJada, voimalikudKohad, x0, y0, x1, y1):
+            """
+            Blokeerib kahemõõtmelises jadas antud ala ristkülikuga ja eemaldab voimalikudest
+            kohtadest ära kohad mis blokeeriti.
+            :param kaheMyytmelineJada: kahemõõtmeline jada kuhu ristkülik asetakse
+            :param voimalikudKohad: jada kust eemaldatakse blokeeritud kohad
+            :param x0: ristküliku ülemine vasak nurga x
+            :param y0: ristküliku ülemise vasak nurga y
+            :param x1: ristküliku alumise parema nurga x
+            :param y1: ristküliku aluse parema nurga y
+            :return: tagastab kahemõõtmelise jada kus on eemaldatud ristküliku ala ja voimaliku kohtade jada
+            kus on eemaldatud blokeeritud kohad
+            """
             for i in range(y0, y1 + 1):
                 for j in range(x0, x1 + 1):
                     try:
@@ -36,7 +57,7 @@ class Kaart:
                         pass
             return kaheMyytmelineJada, voimalikudKohad
 
-        ristkylikuRaadius = 5
+        ristkylikuRaadius = 5 #vaatab kui kaugel tankid üktsteiest olema peaksid
         if self.kaardiLaius >= self.kaardiKyrgus:
             ristKylikuRaadius = self.kaardiKyrgus
         else:
@@ -58,38 +79,36 @@ class Kaart:
                     tekkeKohad.append((tankiX, tankiY))
                 else:
                     if ristkylikuRaadius == 0:
-                        pass
-                    ristkylikuRaadius -= 1
+                        raise Exception("Liiga palju tanke kaardi suuruse jaoks!")
+                    ristkylikuRaadius -= 1 #kohtde mitte leidmisel vähendakse blokeeritavat ala
 
         return tekkeKohad
 
 
 
     def saaResolutsioon(self):
-        res = f"{self.tileSuurus*self.kaardiLaius}x{self.tileSuurus*self.kaardiKyrgus}"
-        return res
+        """
+        muudab kaardi laiuse ja pikkuse pikslite suursele ja tagastab selle
+        :return: tagastab kaardi resolutsiooni pikslites sõnena
+        """
+        return f"{self.tileSuurus*self.kaardiLaius}x{self.tileSuurus*self.kaardiKyrgus}"
 
 
     def drawMap(self):
         """
-        Tuleb otsustada kui suur üks tile on
-        idee,
         Joonistamiseks, paneb igale tileile tyhti mis näitab mis ilmakaartel sellel tileil on sein
-        N (north) tilei põhja suunas on sein
-        S (south) tilei lõuna sunuas on sein
-        W (west) sa saad aru
-        E (east) sa saad aru
-        Neid saab stackida ka et NSW on lubatud sisend yhe tile jaoks
-        ning siis lõppu võib lisada veel mingi tähe mis tähitab tilei pilti kui me tahame keerulisemaid textuure
+        N (north) põhja suunas on sein
+        S (south) lõuna sunuas on sein
+        W (west) lääne suunas on sein
+        E (east) ida suunas on sein
+        Neid saab üksteise peale panna
         nt: 3x3 map [["NW", "N", "NE"],
                      ["W", "", "E"],
                      ["SW", "S", "SE"]]
 
-        :param ekraan:
-        :return:
-        Lõpuks tagastab jada rectidega mis tuleb joonistada, (nüüd kui mõtlen oleks loogilisem drawSeinad)
+        :return: Tagastab jada rectidega mis tuleb joonistada
         """
-        seinaPaksus = 1
+        seinaPaksus = 1 #määrab seinapaksuse pikslites
         tagastavadRectid = []
         for reaArv,rida in enumerate(self.kaart):
             for reaIndex,tile in enumerate(rida):
@@ -110,6 +129,11 @@ class Kaart:
         return tagastavadRectid
 
     def genereeriKaart(self):
+        """
+        Loob tühja myngukaard
+        :return: tagastab kahemõõtmelise jada mille mõõtmed on kaardiKyrgus ja kaardiLaius
+        kõik kohad on täidetud ""ga
+        """
         kaart = []
         for i in range(self.kaardiKyrgus):
             rida = []
@@ -120,6 +144,10 @@ class Kaart:
         return kaart
 
     def randomizedKruskalAlgoritm(self):
+        """
+        Kastuab randomised Kruskali algoritmi, et luua laburünt kaardi jaoks
+        :return:
+        """
         setid = {}
         kylastamataSeinad = []
 
