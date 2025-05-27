@@ -260,10 +260,15 @@ class Menyy:
 
         self.helipilt_silt.config(image=self.helipilt)
 
+    def ava_info(self):
+        messagebox.showinfo("INFO",
+                            """Mängi sätetes ringi ning seejärel vajuta "START". Mängu eesmärk on tulistada vastast ja koguda punkte.""")
+
     def loo_vidinad(self):
         tk.Label(self.aken, text="HÜPERTANKISÕDA", font=("Arial", 24), bg=self.taustavarv).place(y=7, x=320)
         tk.Button(self.aken, text="START", font=("Arial", 16), bg=self.nupuvarv, command=self.stardi_myng, padx=60).place(x=30, y=150)
         tk.Button(self.aken, text="SÄTTED", font=("Arial", 16), bg=self.nupuvarv, command=self.ava_satted, padx=53).place(x=30, y=200)
+        tk.Button(self.aken, text="INFO", font=("Arial", 16), bg=self.nupuvarv, command=self.ava_info, padx=69).place(x=30, y=250)
 
         self.helipilt_silt.place(relx=0.95, rely=0.95, anchor="se")
 
