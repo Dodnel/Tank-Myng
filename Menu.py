@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 from Myng import Myng
 from tkinter import messagebox
 
+
 class Menyy:
     def __init__(self, mynguAlustamisel=None):
         pygame.init()
@@ -65,6 +66,24 @@ class Menyy:
             messagebox.showerror("Viga", "Palun määra mängijate arv ja kontrollid sätetes.")
             return
 
+        ruuduSuurus = int(self.tileSuurus.get())
+        kaardiLaius = int(self.kaardiLaius.get())
+        kaardiKorgus = int(self.kaardiKyrgus.get())
+
+        akenLaius = ruuduSuurus * kaardiLaius
+        akenKorgus = ruuduSuurus * kaardiKorgus
+
+        ekraan_laius = self.aken.winfo_screenwidth()
+        ekraan_korgus = self.aken.winfo_screenheight()
+
+        if akenLaius < 600:
+            messagebox.showerror("Viga", "Akna laius ei tohi olla väiksem kui 600 pikslit.")
+            return
+
+        if akenLaius > ekraan_laius - 100 or akenKorgus > ekraan_korgus - 100:
+            messagebox.showerror("Viga", "Akna mõõtmed on suuremad kui ekraani omad.")
+            return
+
         # Kontrolli, et kõik kontrollid oleks täidetud
         for i, kontrollid in enumerate(self.tankide_kontrollid, start=1):
             for suund, var in kontrollid.items():
@@ -74,21 +93,21 @@ class Menyy:
 
         try:
             self.mynguAlustamisel = Myng(
-                mangu_muusika_voluum = self.mangu_muusika_voluum.get() / 100,
-                sfx_voluum = self.sfx_voluum.get() / 100,
-                kaardiLaius = int(self.kaardiLaius.get()),
-                kaardiKyrgus = int(self.kaardiKyrgus.get()),
-                tileSuurus= int(self.tileSuurus.get()),
-                tankideLiikumisProfiilid = [
+                mangu_muusika_voluum=self.mangu_muusika_voluum.get() / 100,
+                sfx_voluum=self.sfx_voluum.get() / 100,
+                kaardiLaius=int(self.kaardiLaius.get()),
+                kaardiKyrgus=int(self.kaardiKyrgus.get()),
+                tileSuurus=int(self.tileSuurus.get()),
+                tankideLiikumisProfiilid=[
                     {
                         var.get(): suund for suund, var in kontrollid.items()
                     }
                     for kontrollid in self.tankide_kontrollid
                 ],
-                kuuliKiirus = int(self.kuuli_kiirus.get()),
-                voimendus1 = int(self.voimendus1.get()),
-                voimendus2 = int(self.voimendus2.get()),
-                voimendus3 = int(self.voimendus3.get())
+                kuuliKiirus=int(self.kuuli_kiirus.get()),
+                voimendus1=int(self.voimendus1.get()),
+                voimendus2=int(self.voimendus2.get()),
+                voimendus3=int(self.voimendus3.get())
             )
             self.aken.destroy()
 
@@ -145,7 +164,7 @@ class Menyy:
         def lisa_slaider(vanem, nimi, min_v, max_v, muutuja):
             raam = tk.Frame(vanem)
             raam.pack(pady=5)
-            tk.Label(raam, text=nimi, width=20, anchor="w").pack(side="left")
+            tk.Label(raam, text=nimi, width =20, anchor="w").pack(side="left")
             tk.Scale(raam, from_=min_v, to=max_v, orient="horizontal", variable=muutuja).pack(side="right")
 
         def lisa_tekstisisestus(vanem, nimi, muutuja):
@@ -198,8 +217,9 @@ class Menyy:
         self.tankide_kontrollid.clear()
 
         default_kontrollid = [
-            {"edasi": "w", "tagasi": "s", "vasakule": "a", "paremale": "d", "tulista": "f"},
+            {"edasi": "w", "tagasi": "s", "vasakule": "a", "paremale": "d", "tulista": "e"},
             {"edasi": "i", "tagasi": "k", "vasakule": "j", "paremale": "l", "tulista": "o"},
+            {"edasi": "t", "tagasi": "g", "vasakule": "f", "paremale": "h", "tulista": "y"}
         ]
 
         for i in range(self.mangijate_arv.get()):
@@ -215,10 +235,14 @@ class Menyy:
                 if i < len(default_kontrollid):
                     var.set(default_kontrollid[i][tegevus])
 
-                tk.Entry(frame, textvariable=var, width=10).pack(side="left")
+                vcmd = (self.aken.register(self._kontrolli_sisestust), "%P")
+                tk.Entry(frame, width=3, textvariable=var, validate="key", validatecommand=vcmd).pack(side="left")
                 kontrollid[tegevus] = var
 
             self.tankide_kontrollid.append(kontrollid)
+
+    def _kontrolli_sisestust(self, sisu):
+        return len(sisu) <= 1
 
     def stardi_heli(self):
         pygame.mixer.music.load(r"audio\Tanki_mangu_peamenyy_laul_copyrighted_trust.mp3")
