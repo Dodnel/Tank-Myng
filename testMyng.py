@@ -7,7 +7,7 @@ from Tank import Tank
 from liikumine import Liikumine
 
 #siin on uus kaardi süsteem
-kaart = Kaart(kaardiLaius=10, kaardiKyrgus=6 ,tileSuurus=100)
+kaart = Kaart(kaardiLaius=16, kaardiKyrgus=2 ,tileSuurus=100)
 
 resolutsioon = kaart.saaResolutsioon()
 

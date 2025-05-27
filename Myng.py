@@ -37,6 +37,12 @@ class Myng:
         self.kuulideGrupp = pygame.sprite.Group()
         self.tankideGrupp = pygame.sprite.Group()
 
+        self.kuuliKiirus = kuuliKiirus
+
+        self.voimendus1 = voimendus1
+        self.voimendus2 = voimendus2
+        self.voimendus3 = voimendus3
+
         self.seinad = []
         self.tankid = []
         self.liikumine = None
@@ -70,7 +76,8 @@ class Myng:
         for i, (koht, vyrv) in enumerate(zip(tekkeKohad, vyrvid)):
             uusTank = Tank(x=koht[0] * self.tileSuurus + self.tileSuurus / 2,
                            y=koht[1] * self.tileSuurus + self.tileSuurus / 2,
-                            kuuliKiirus=5, vyrv=vyrv,heliEfektiValjusus=self.sfxVoluum,seinad=self.seinad)
+                            kuuliKiirus=self.kuuliKiirus, vyrv=vyrv,heliEfektiValjusus=self.sfxVoluum,seinad=self.seinad,
+                           voimendus1=self.voimendus1, voimendus2=self.voimendus2, voimendus3=self.voimendus3)
 
             uusTank.skooriIndeks = i
 
