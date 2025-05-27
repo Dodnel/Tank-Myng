@@ -12,6 +12,9 @@ class Menyy:
 
         self.mynguAlustamisel = mynguAlustamisel
         self.aken = tk.Tk()
+        ikoon = Image.open('pildid/pixil-frame-0.png')
+        ikoonPilt = ImageTk.PhotoImage(ikoon)
+        self.aken.wm_iconphoto(False, ikoonPilt)
         self.aken.title("HÜPERTANKISÕDA - Tony Tuisk, Karl Priido Hoogand, Ander Konsap")
         self.akna_suurus_x, self.akna_suurus_y = 640, 360
         self.aken.geometry(f"{self.akna_suurus_x}x{self.akna_suurus_y}")
