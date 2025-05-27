@@ -10,7 +10,7 @@ from PIL import Image
 
 #see on varastatud, ma vist teen yppimise pyhimyttel ise mingi hetk
 class Tank(pygame.sprite.Sprite):
-    def __init__(self, x, y, vyrv, seinad: list, kuuliKiirus=5, heliEfektiValjusus: float=0.2, voimendus1: bool=False, voimendus2: bool=False, voimendus3: bool=False):
+    def __init__(self, x, y, vyrv, seinad, tileSuurus, kuuliKiirus=5, heliEfektiValjusus: float=0.2, voimendus1: bool=False, voimendus2: bool=False, voimendus3: bool=False):
         pygame.sprite.Sprite.__init__(self)
 
         vyrvid = ["sinine", "roheline", "punane", "kollane"]
@@ -19,16 +19,24 @@ class Tank(pygame.sprite.Sprite):
         else:
             vyrv = "Sprites/default.png"
 
+        self.tileSuurus = tileSuurus
+
         self.original_image = pygame.image.load(vyrv)
+
+        self.original_image = pygame.transform.scale(self.original_image,
+                                                     (self.original_image.get_width() * self.tileSuurus / 100, self.original_image.get_height() * self.tileSuurus / 100))
+
         self.image = self.original_image
+
         self.rectKeskpunkt = (x,y)
         self.rect = self.image.get_rect(center=self.rectKeskpunkt)
         self.mask = pygame.mask.from_surface(self.image)
-        self.h = self.image.get_height()
+
+        self.h = self.original_image.get_height()
         self.angle = 0
 
         self.kuuliKiirus = kuuliKiirus
-        self.kiirus = 3
+        self.kiirus = 3 * (self.tileSuurus/100)
         self.seinad = seinad
 
         self.salve_maht = 1
@@ -135,13 +143,13 @@ class Tank(pygame.sprite.Sprite):
             if self.salv == 0:
                 self.laadib = True
                 self.laadimise_algus = pygame.time.get_ticks()
-            toruVektor = pygame.Vector2.from_polar((self.h / 2 + 9, -self.angle + 90))
+            toruVektor = pygame.Vector2.from_polar((self.h / 2 + (9 * (self.tileSuurus / 100)), -self.angle + 90))
             kuuliPunkt = self.rectKeskpunkt + toruVektor
 
             self.tulistamisHeli.play()
 
-            return Kuul(suund=-self.angle + 90, kiirus=self.kuuliKiirus, x=kuuliPunkt[0], y=kuuliPunkt[1],
-                        powerupCosinus=self.voimendus3, powerupKiirus=self.voimendus1, powerupSuurus=self.voimendus2, powerupLaser=self.voimendus3)
+            return Kuul(suund=-self.angle + 90, kiirus=self.kuuliKiirus, x=kuuliPunkt[0], y=kuuliPunkt[1], tileSuurus=self.tileSuurus,
+                        powerupCosinus=self.voimendus3, powerupKiirus=self.voimendus1, powerupSuurus=self.voimendus2,)
         return None
 
     def uuendaSalv(self):
@@ -195,12 +203,12 @@ class Tank(pygame.sprite.Sprite):
         Joonistab väikse kastikese tanki ette, mis kuvab mängijale, et kas tal on võimalik tulistada
         :return: tagastab recti ja selle vyrvi
         """
-        toruVektor = pygame.Vector2.from_polar((self.h / 2 + 9, -self.angle + 90))
+        toruVektor = pygame.Vector2.from_polar((self.h / 2 + 9 * (self.tileSuurus / 100), -self.angle + 90))
         indikaatori_pos = self.rectKeskpunkt + toruVektor
 
         varv = (0, 255, 0) if self.salv > 0 else (255, 0, 0)  # roheline kui on kuule, muidu punane
 
-        return pygame.Rect(indikaatori_pos[0] - 4, indikaatori_pos[1] - 4, 8, 8), varv
+        return pygame.Rect(indikaatori_pos[0] - 4, indikaatori_pos[1] - 4, 8 * (self.tileSuurus / 100), 8 * (self.tileSuurus / 100)), varv
 
 
     def alustaPlahvatus(self):

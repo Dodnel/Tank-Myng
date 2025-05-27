@@ -77,7 +77,7 @@ class Myng:
             uusTank = Tank(x=koht[0] * self.tileSuurus + self.tileSuurus / 2,
                            y=koht[1] * self.tileSuurus + self.tileSuurus / 2,
                             kuuliKiirus=self.kuuliKiirus, vyrv=vyrv,heliEfektiValjusus=self.sfxVoluum,seinad=self.seinad,
-                           voimendus1=self.voimendus1, voimendus2=self.voimendus2, voimendus3=self.voimendus3)
+                           voimendus1=self.voimendus1, voimendus2=self.voimendus2, voimendus3=self.voimendus3,tileSuurus=self.tileSuurus)
 
             uusTank.skooriIndeks = i
 
@@ -206,5 +206,5 @@ class Myng:
 
 
 if __name__ == '__main__':
-    myng = Myng(kaardiLaius=6,kaardiKyrgus=6, tileSuurus=100,tankideLiikumisProfiilid=[{"p": "edasi", "ö": "tagasi", "l": "vasakule", "ä": "paremale","ü": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}],sfx_voluum=0.2, mangu_muusika_voluum=0)
+    myng = Myng(kaardiLaius=12,kaardiKyrgus=6, tileSuurus=50,tankideLiikumisProfiilid=[{"p": "edasi", "ö": "tagasi", "l": "vasakule", "ä": "paremale","ü": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}, {"w": "edasi", "s": "tagasi", "a": "vasakule", "d": "paremale","f": "tulista"}],sfx_voluum=0.2, mangu_muusika_voluum=0)
     myng.run()
