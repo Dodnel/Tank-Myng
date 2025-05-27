@@ -1,7 +1,7 @@
 import pygame, math
 
 class Kuul(pygame.sprite.Sprite):
-    def __init__(self, suund, kiirus: int, x, y, powerupSuurus = False, powerupKiirus = False, powerupCosinus = False, powerupLaser= False):
+    def __init__(self, suund, kiirus: int, x, y, tileSuurus, powerupSuurus = False, powerupKiirus = False, powerupCosinus = False):
         pygame.sprite.Sprite.__init__(self)
 
         # Kuuli x ja y kordinaat
@@ -30,14 +30,19 @@ class Kuul(pygame.sprite.Sprite):
 
         # 2 kordistab kiiruse kui võimendi on True
         if powerupKiirus:
-            self.otseLiikumiseVektor = pygame.Vector2.from_polar((2 * kiirus, suund))
+            self.otseLiikumiseVektor = pygame.Vector2.from_polar((2 * (kiirus * (tileSuurus / 100)), suund))
         else:
-            self.otseLiikumiseVektor = pygame.Vector2.from_polar((kiirus, suund))
+            self.otseLiikumiseVektor = pygame.Vector2.from_polar((kiirus * (tileSuurus / 100), suund))
 
         # Kuuli halliks tegemine
         self.kuul.fill((125,125,125))
 
         # Kuuli recti ja maski loomine
+
+        self.kuul = pygame.transform.scale(self.kuul, (
+            self.kuul.get_width() * tileSuurus / 100,
+            self.kuul.get_height() * tileSuurus / 100))
+
         self.image = self.kuul
         self.rect = self.image.get_rect(center=(x, y))
         self.mask = pygame.mask.from_surface(self.image)

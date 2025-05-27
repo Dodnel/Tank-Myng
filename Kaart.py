@@ -65,13 +65,7 @@ class Kaart:
             return kaheMyytmelineJada, voimalikudKohad
 
 
-        ristkylikuRaadius = 5 #vaatab kui kaugel tankid üktsteiest olema peaksid
-        if self.kaardiLaius >= self.kaardiKyrgus:
-            ristKylikuRaadius = self.kaardiKyrgus
-        else:
-            ristkylikuRaadius = self.kaardiLaius
-
-
+        ristKylikuRaadius = 5 # max suurus on viis sest suurematel kordadel hakkab myng laggama suuremal alal.
         tekkeKohad = []
         while len(tekkeKohad) < tankideArv:
             spawnKaart, voimalikudTekkeKohad = looSpawnJaVoimalikudKohad()
@@ -83,12 +77,12 @@ class Kaart:
                     spawnKaart, voimalikudTekkeKohad = looRistkylik(spawnKaart,voimalikudTekkeKohad,
                                                                     tankiX - ristKylikuRaadius,
                                                                     tankiY - ristKylikuRaadius,
-                                                                    tankiX + ristkylikuRaadius,
-                                                                    tankiY + ristkylikuRaadius)
+                                                                    tankiX + ristKylikuRaadius,
+                                                                    tankiY + ristKylikuRaadius)
                     tekkeKohad.append((tankiX, tankiY))
                 else:
-                    if ristkylikuRaadius > 1:
-                        ristkylikuRaadius -= 1 #kohtde mitte leidmisel vähendakse blokeeritavat ala
+                    if ristKylikuRaadius > 0:
+                        ristKylikuRaadius -= 1 #kohtde mitte leidmisel vähendakse blokeeritavat ala
                     break
 
         return tekkeKohad
