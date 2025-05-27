@@ -7,7 +7,6 @@ def main():
 
         if not menyy.mynguAlustamisel:
             break
-
         try:
             menyy.mynguAlustamisel.run()
         except StopIteration:
