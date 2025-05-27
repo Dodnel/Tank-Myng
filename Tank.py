@@ -28,7 +28,7 @@ class Tank(pygame.sprite.Sprite):
         self.angle = 0
 
         self.kuuliKiirus = kuuliKiirus
-        self.kiirus = 5
+        self.kiirus = 3
         self.seinad = seinad
 
         self.salve_maht = 1
